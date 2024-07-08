@@ -16,24 +16,24 @@ public static class TenistaMapper
     public static Tenista ToTenista(this TenistaDto dto)
     {
         return new Tenista(
-            nombre: dto.Nombre,
-            pais: dto.Pais,
-            altura: dto.Altura,
-            peso: dto.Peso,
-            puntos: dto.Puntos,
-            mano: Enum.Parse<Mano>(dto.Mano,
-                ignoreCase: true), // Se utiliza Enum.Parse para convertir el string a su correspondiente enumerado
-            fechaNacimiento: DateTime.Parse(dto.FechaNacimiento, null,
+            dto.Nombre,
+            dto.Pais,
+            dto.Altura,
+            dto.Peso,
+            dto.Puntos,
+            Enum.Parse<Mano>(dto.Mano,
+                true), // Se utiliza Enum.Parse para convertir el string a su correspondiente enumerado
+            DateTime.Parse(dto.FechaNacimiento, null,
                 DateTimeStyles
                     .RoundtripKind), // Se utiliza DateTime.Parse para convertir el string a DateTime con el formato correcto ISO
-            createdAt: dto.CreatedAt != null
+            dto.CreatedAt != null
                 ? DateTime.Parse(dto.CreatedAt, null, DateTimeStyles.RoundtripKind)
                 : DateTime.Now, // Se utiliza DateTime.Parse para: DateTime.Now,
-            updatedAt: dto.UpdatedAt != null
+            dto.UpdatedAt != null
                 ? DateTime.Parse(dto.UpdatedAt, null, DateTimeStyles.RoundtripKind)
                 : DateTime.Now, // Se utiliza DateTime.Parse para: DateTime.Now,
-            isDeleted: dto.IsDeleted ?? false,
-            id: dto.Id
+            dto.IsDeleted ?? false,
+            dto.Id
         );
     }
 
@@ -41,18 +41,18 @@ public static class TenistaMapper
     public static TenistaDto ToTenistaDto(this Tenista tenista)
     {
         return new TenistaDto(
-            Id: tenista.Id,
-            Nombre: tenista.Nombre,
-            Pais: tenista.Pais,
-            Altura: tenista.Altura,
-            Peso: tenista.Peso,
-            Puntos: tenista.Puntos,
-            Mano: tenista.Mano.ToString(),
-            FechaNacimiento: tenista.FechaNacimiento
+            tenista.Id,
+            tenista.Nombre,
+            tenista.Pais,
+            tenista.Altura,
+            tenista.Peso,
+            tenista.Puntos,
+            tenista.Mano.ToString(),
+            tenista.FechaNacimiento
                 .ToString("yyyy-MM-dd"), // Se utiliza ToString con el formato correcto ISO
-            CreatedAt: tenista.CreatedAt.ToString("o"), // Se utiliza ToString con el formato correcto ISO
-            UpdatedAt: tenista.UpdatedAt.ToString("o"),
-            IsDeleted: tenista.IsDeleted
+            tenista.CreatedAt.ToString("o"), // Se utiliza ToString con el formato correcto ISO
+            tenista.UpdatedAt.ToString("o"),
+            tenista.IsDeleted
         );
     }
 }

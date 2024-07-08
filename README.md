@@ -42,3 +42,27 @@ La idea subyacente es el famoso patrón de diseño Repository usado en Android, 
 
 ![Repository Pattern](./images/pattern.webp)
 
+## Test
+
+A la hora de realizar los tests, hemos usado [NUnit](https://nunit.org/), pero antes de nada asegurate de seguir los pasos en:
+[Getting Started with NUnit](https://www.jetbrains.com/help/rider/Getting_Started_with_Unit_Testing.html#step-1-add-unit-test-project)
+y configura tu proyecto para que use NUnit.
+Para ello en tu directorio de usuario crea un archivo `nuget.config` con el siguiente contenido:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+    </packageSources>
+</configuration>
+```
+
+O desde Rider, ve a NuGet y configura el origen de los paquetes.
+![NuGet](./images/nuget.png)
+
+Ahora ya puedes instalar NUnit en tu proyecto.
+
+```bash
+dotnet add package NUnit
+```

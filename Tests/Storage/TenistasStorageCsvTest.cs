@@ -25,11 +25,8 @@ public class TenistasStorageCsvTest
         var fileInfo = new FileInfo(filePath);
 
 
-        if (Directory.Exists(directoryPath)) Directory.Delete(directoryPath, true);
-
         var result = await _storage.ImportAsync(fileInfo);
-        
-        Console.WriteLine(result.Error);
+
 
         Assert.Multiple(() =>
         {

@@ -13,9 +13,10 @@ public class TenistasDbContext : DbContext
     public DbSet<TenistaEntity> Tenistas { get; set; } // DbSet es una colección de entidades de tipo TenistaEntity
 
     // En el método OnModelCreating se definen las relaciones entre las entidades y las tablas de la base de datos.
+    // Tambien se puede hacer por medio de DataAnnotations en las entidades.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TenistaEntity>(entity =>
+        /*modelBuilder.Entity<TenistaEntity>(entity =>
         {
             // Se define la tabla y la clave primaria TenistaEntity
             entity.ToTable("TenistaEntity");
@@ -35,6 +36,16 @@ public class TenistasDbContext : DbContext
             entity.Property(e => e.IsDeleted).IsRequired()
                 .HasDefaultValue(
                     false); // Se define que el campo IsDeleted es obligatorio y tiene un valor por defecto de false
+        });*/
+        // Se añade el DbSet para la entidad TenistaEntity en la base de datos
+        // Lo hace todo con las anotaciones de la entidad, así que solo voy a añadir las fechas
+        // Que son las que no se pueden hacer con anotaciones
+        modelBuilder.Entity<TenistaEntity>(entity =>
+        {
+            entity.Property(e => e.CreatedAt).IsRequired()
+                .ValueGeneratedOnAdd(); // Se define que el campo CreatedAt es obligatorio y se genera automáticamente al añadir un registro
+            entity.Property(e => e.UpdatedAt).IsRequired()
+                .ValueGeneratedOnUpdate(); // Se define que el campo UpdatedAt es obligatorio y se genera automáticamente al actualizar un registro
         });
     }
 }

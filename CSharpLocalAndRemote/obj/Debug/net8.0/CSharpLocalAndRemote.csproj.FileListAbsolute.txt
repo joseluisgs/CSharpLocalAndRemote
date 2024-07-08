@@ -13,3 +13,12 @@ C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.pdb
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.genruntimeconfig.cache
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\ref\CSharpLocalAndRemote.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\CSharpFunctionalExtensions.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.csproj.AssemblyReference.cache
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLo.7C03F3AB.Up2Date
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Serilog.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Serilog.Sinks.Console.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Data\tenistas.csv
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Data\tenistas.json
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Data\tenistas2.csv
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Data\tenistas3.json

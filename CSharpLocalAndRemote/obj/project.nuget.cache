@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "s8p/zhbGraUe5/yRSxkWJdjYmePmOfvsUG0WW5FAL4kOkxG8stgVmQBBJWQGyj8iXZZcQeI1Bdzdc7E5wn8HUw==",
+  "dgSpecHash": "ThkK8aC5WMLfKQsHyP8t5CmokigaYLGt0Kdp8PwPwZTnvPPy1spBc0zo8riM35zkQPhIWacRnJdKAJb2pJgvCw==",
   "success": true,
   "projectFilePath": "C:\\Users\\joseluisgs\\Projects\\CSharpLocalAndRemote\\CSharpLocalAndRemote\\CSharpLocalAndRemote.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\joseluisgs\\.nuget\\packages\\csharpfunctionalextensions\\2.42.5\\csharpfunctionalextensions.2.42.5.nupkg.sha512",
+    "C:\\Users\\joseluisgs\\.nuget\\packages\\serilog\\4.0.0\\serilog.4.0.0.nupkg.sha512",
+    "C:\\Users\\joseluisgs\\.nuget\\packages\\serilog.sinks.console\\6.0.0\\serilog.sinks.console.6.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

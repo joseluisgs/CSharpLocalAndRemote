@@ -20,7 +20,7 @@ public class TenistasStorageCsvTest
     [DisplayName("Import debe devolver error si el fichero no existe")]
     public async Task Importar_DeberiaDevolverErrorSiElFicheroNoExiste()
     {
-        var directoryPath = Path.Combine(Path.GetTempPath(), "nonExistingDirectory");
+        var directoryPath = Path.Combine(Path.GetTempPath(), "noimportcsv");
         var filePath = Path.Combine(directoryPath, "noExiste.csv");
         var fileInfo = new FileInfo(filePath);
 
@@ -34,6 +34,8 @@ public class TenistasStorageCsvTest
             Assert.That(result.Error.ToString().Contains("ERROR: El fichero no existe"), Is.True,
                 "El mensaje de error debería ser correcto");
         });
+
+        if (Directory.Exists(directoryPath)) Directory.Delete(directoryPath, true);
     }
 
     [Test]
@@ -57,7 +59,7 @@ public class TenistasStorageCsvTest
             Assert.That(result.Value[0].Peso, Is.EqualTo(85), "El peso del tenista debería ser correcto");
         });
 
-        File.Delete(tempFilePath); // Limpieza del archivo temporal
+        if (Directory.Exists(tempFilePath)) Directory.Delete(tempFilePath, true);
     }
 
     [Test]
@@ -79,14 +81,14 @@ public class TenistasStorageCsvTest
             Assert.That(result.Value, Is.EqualTo(1), "Debería haber exportado un tenista");
         });
 
-        File.Delete(tempFilePath); // Limpieza del archivo temporal
+        if (Directory.Exists(tempFilePath)) Directory.Delete(tempFilePath, true);
     }
 
     [Test]
     [DisplayName("Exportar fichero debe devolver error si el fichero o directorio no existe")]
     public async Task Exportar_DeberiaDevolverErrorSiElFicheroNoExiste()
     {
-        var directoryPath = Path.Combine(Path.GetTempPath(), "nonExistingDirectory");
+        var directoryPath = Path.Combine(Path.GetTempPath(), "noexportcsv");
         var filePath = Path.Combine(directoryPath, "noExiste.csv");
         var fileInfo = new FileInfo(filePath);
 
@@ -100,8 +102,13 @@ public class TenistasStorageCsvTest
 
         var result = await _storage.ExportAsync(fileInfo, tenistas);
 
-        Assert.IsTrue(result.IsFailure, "El resultado debería ser un error");
-        Assert.That(result.Error.ToString().Contains("ERROR: No se puede acceder al fichero"), Is.True,
-            "El mensaje de error debería ser correcto");
+        Console.WriteLine(result.Error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.IsTrue(result.IsFailure, "El resultado debería ser un error");
+            Assert.That(result.Error.ToString().Contains("ERROR: No se puede acceder al fichero"), Is.True,
+                "El mensaje de error debería ser correcto");
+        });
     }
 }

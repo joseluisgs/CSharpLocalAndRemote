@@ -13,7 +13,7 @@ public abstract class TenistaError
     {
         public StorageError(string message)
         {
-            Message = message;
+            Message = "ERROR: " + message;
         }
     }
 }

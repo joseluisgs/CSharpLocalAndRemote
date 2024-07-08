@@ -23,8 +23,11 @@ public class TenistasStorageJsonTest
     [DisplayName("Importar fichero JSON debe devolver error si el fichero no existe")]
     public async Task Importar_DeberiaDevolverErrorSiElFicheroNoExiste()
     {
-        var file = new FileInfo(Path.Combine(Path.GetTempPath(), "noExiste.json"));
-        var result = await _storage.ImportAsync(file);
+        var directoryPath = Path.Combine(Path.GetTempPath(), "noimportcsv");
+        var filePath = Path.Combine(directoryPath, "noExiste.csv");
+        var fileInfo = new FileInfo(filePath);
+
+        var result = await _storage.ImportAsync(fileInfo);
 
         Assert.Multiple(() =>
         {
@@ -32,6 +35,8 @@ public class TenistasStorageJsonTest
             Assert.That(result.Error.ToString().Contains("ERROR: El fichero no existe"), Is.EqualTo(true),
                 "El error debería ser que el fichero no existe");
         });
+
+        if (Directory.Exists(directoryPath)) Directory.Delete(directoryPath, true);
     }
 
     [Test]
@@ -59,7 +64,7 @@ public class TenistasStorageJsonTest
                 "El nombre del tenista debería ser correcto");
         });
 
-        File.Delete(tempFilePath); // Limpieza del archivo temporal
+        if (Directory.Exists(tempFilePath)) Directory.Delete(tempFilePath, true);
     }
 
     [Test]
@@ -86,14 +91,14 @@ public class TenistasStorageJsonTest
         Assert.IsNotNull(tenistasDto, "La deserialización no debería devolver null");
         Assert.That(tenistasDto.Count, Is.EqualTo(1), "Debería haber un tenista en el archivo");
 
-        File.Delete(tempFilePath); // Limpieza del archivo temporal
+        if (Directory.Exists(tempFilePath)) Directory.Delete(tempFilePath, true);
     }
 
     [Test]
     [DisplayName("Exportar fichero JSON debe devolver error si no puede escribir el fichero")]
     public async Task Exportar_DeberiaDevolverErrorSiNoPuedeEscribirElFichero()
     {
-        var directoryPath = Path.Combine(Path.GetTempPath(), "nonExistingDirectory");
+        var directoryPath = Path.Combine(Path.GetTempPath(), "nonexportjson");
         var filePath = Path.Combine(directoryPath, "noExiste.json");
         var fileInfo = new FileInfo(filePath);
 

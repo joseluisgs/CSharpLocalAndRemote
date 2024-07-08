@@ -9,9 +9,10 @@ public class EntityManager<T> where T : class
     public EntityManager(DbContext context)
     {
         Context = context;
-        DbSet = Context.Set<T>();
     }
 
-    public DbSet<T> DbSet { get; }
-    public DbContext Context { get; }
+    public DbSet<T> DbSet =>
+        Context.Set<T>(); // DbSet es una colección de entidades que se pueden consultar, agregar, modificar y eliminar.
+
+    public DbContext Context { get; } // DbContext es una clase que se encarga de la conexión con la base de datos.
 }

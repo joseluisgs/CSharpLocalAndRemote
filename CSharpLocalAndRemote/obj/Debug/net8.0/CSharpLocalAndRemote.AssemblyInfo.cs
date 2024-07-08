@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CSharpLocalAndRemote")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c1ab97b61182d68398409d2dc36ffc99888bfacb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+81cc1f35599ca599c4bfe47a503ae816af8b5638")]
 [assembly: System.Reflection.AssemblyProductAttribute("CSharpLocalAndRemote")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CSharpLocalAndRemote")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

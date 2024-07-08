@@ -11,17 +11,17 @@ namespace CSharpLocalAndRemote.Storage;
 
 public class TenistasStorageCsv : ITenistasStorage
 {
-    private readonly Logger logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+    private Logger Logger { get; } = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
 
     public async Task<Result<List<Tenista>, TenistaError.StorageError>> ImportAsync(FileInfo file)
     {
-        logger.Debug("Importando fichero de csv {file}", file.FullName);
+        Logger.Debug("Importando fichero de csv {file}", file.FullName);
         return await ReadLinesAsync(file);
     }
 
     public async Task<Result<int, TenistaError.StorageError>> ExportAsync(FileInfo file, List<Tenista> data)
     {
-        logger.Debug("Exportando fichero de csv {file}", file.FullName);
+        Logger.Debug("Exportando fichero de csv {file}", file.FullName);
 
         return await file.EnsureFileCanExists()
             .Match(
@@ -67,7 +67,7 @@ public class TenistasStorageCsv : ITenistasStorage
 
     private Tenista parseLine(string[] parts)
     {
-        logger.Debug("Parseando línea {item}", parts);
+        Logger.Debug("Parseando línea {item}", parts);
         return new TenistaDto(
             long.Parse(parts[0]),
             parts[1],

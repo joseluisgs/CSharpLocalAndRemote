@@ -16,4 +16,12 @@ public abstract class TenistaError
             Message = "ERROR: " + message;
         }
     }
+
+    public class DatabaseError : TenistaError
+    {
+        public DatabaseError(string message)
+        {
+            Message = "ERROR: " + message;
+        }
+    }
 }

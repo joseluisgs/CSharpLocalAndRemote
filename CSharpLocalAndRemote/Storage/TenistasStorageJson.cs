@@ -12,17 +12,17 @@ namespace CSharpLocalAndRemote.Storage;
 
 public class TenistasStorageJson : ITenistasStorage
 {
-    private readonly Logger logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+    private Logger Logger { get; } = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
 
     public async Task<Result<List<Tenista>, TenistaError.StorageError>> ImportAsync(FileInfo file)
     {
-        logger.Debug("Importando fichero JSON {file}", file.FullName);
+        Logger.Debug("Importando fichero JSON {file}", file.FullName);
         return await ReadLinesAsync(file);
     }
 
     public async Task<Result<int, TenistaError.StorageError>> ExportAsync(FileInfo file, List<Tenista> data)
     {
-        logger.Debug("Exportando fichero JSON {file}", file.FullName);
+        Logger.Debug("Exportando fichero JSON {file}", file.FullName);
 
         return await file.EnsureFileCanExists()
             .Match(

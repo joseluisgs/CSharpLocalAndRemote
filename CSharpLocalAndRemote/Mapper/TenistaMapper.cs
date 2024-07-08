@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using CSharpLocalAndRemote.Database;
 using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.model;
 
@@ -54,5 +55,42 @@ public static class TenistaMapper
             tenista.UpdatedAt.ToString("o"),
             tenista.IsDeleted
         );
+    }
+
+    public static Tenista ToTenista(this TenistaEntity entity)
+    {
+        return new Tenista(
+            entity.Nombre,
+            entity.Pais,
+            entity.Altura,
+            entity.Peso,
+            entity.Puntos,
+            Enum.Parse<Mano>(entity.Mano,
+                true),
+            DateTime.ParseExact(entity.FechaNacimiento, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+            DateTime.Parse(entity.CreatedAt, null, DateTimeStyles.RoundtripKind),
+            DateTime.Parse(entity.UpdatedAt, null, DateTimeStyles.RoundtripKind),
+            entity.IsDeleted,
+            entity.Id
+        );
+    }
+
+    public static TenistaEntity ToTenistaEntity(this Tenista tenista)
+    {
+        // Como no tiene constructor con parámetros, se crea un objeto y se asignan los valores uno por uno
+        return new TenistaEntity
+        {
+            Id = tenista.Id,
+            Nombre = tenista.Nombre,
+            Pais = tenista.Pais,
+            Altura = tenista.Altura,
+            Peso = tenista.Peso,
+            Puntos = tenista.Puntos,
+            Mano = tenista.Mano.ToString(),
+            FechaNacimiento = tenista.FechaNacimiento.ToString("yyyy-MM-dd"),
+            CreatedAt = tenista.CreatedAt.ToString("o"),
+            UpdatedAt = tenista.UpdatedAt.ToString("o"),
+            IsDeleted = tenista.IsDeleted
+        };
     }
 }

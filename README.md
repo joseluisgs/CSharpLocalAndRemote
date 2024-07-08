@@ -42,6 +42,47 @@ La idea subyacente es el famoso patrón de diseño Repository usado en Android, 
 
 ![Repository Pattern](./images/pattern.webp)
 
+## Programación asíncrona y reactiva
+
+La
+programación [asíncrona](https://sunscrapers.com/blog/programming-async-vs-sync-best-approach/)
+es un modelo de programación que permite realizar tareas en segundo plano sin bloquear el hilo
+principal de
+la aplicación.
+La [reactividad](https://www.baeldung.com/cs/reactive-programming#:~:text=Reactive%20programming%20is%20a%20declarative,or%20reactive%20systems%20in%20general.)
+es un modelo de programación que permite reaccionar a eventos de forma rápida y eficiente.
+La programación reactiva es un paradigma de programación declarativa que se basa en la idea del procesamiento asíncrono
+de eventos y flujos de datos.
+
+En C#, la programación asíncrona y reactiva se puede realizar
+con [Async/Await](https://learn.microsoft.com/es-es/dotnet/csharp/asynchronous-programming/)
+y [IAsyncEnumerable y Linq](https://learn.microsoft.com/es-es/shows/on-net/supporting-iasyncenumerable-with-linq). 
+Con Async/Await se pueden realizar tareas en segundo plano de forma sencilla y eficiente. Con IAsyncEnumerable y Linq se
+pueden realizar operaciones asíncronas de forma sencilla y eficiente.
+
+## Railway Oriented Programming
+
+El [Railway Oriented Programming](https://fsharpforfunandprofit.com/rop/) (ROP) es un estilo de programación que se basa
+en el uso de funciones que devuelven un
+resultado. De esta manera, se pueden encadenar operaciones de forma sencilla y eficiente. En C#, el ROP se puede
+realizar con la clase Result. La clase Result es una clase que representa un resultado exitoso o un resultado fallido.
+De
+esta manera, se pueden realizar operaciones de forma sencilla y eficiente.
+
+Para ello debemos instalar las extensiones funcionales de C#.
+
+```bash
+dotnet add package CSharpFunctionalExtensions
+````
+
+Para ello debemos entender que es el Happy Path y el Error Path. El Happy Path es el camino feliz, es decir, el camino
+que se espera que se siga. El Error Path es el camino de error, es decir, el camino que se sigue cuando se produce un
+error.
+
+De esta manera podemos encadenar operaciones de forma sencilla y eficiente. Si una operación falla, se sigue el Error
+Path. Si una operación tiene éxito, se sigue el Happy Path.
+
+
 ## Test
 
 A la hora de realizar los tests, hemos usado [NUnit](https://nunit.org/), pero antes de nada asegurate de seguir los pasos en:

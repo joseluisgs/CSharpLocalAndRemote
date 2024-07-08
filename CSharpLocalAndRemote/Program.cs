@@ -34,3 +34,34 @@ await storageCsv.ExportAsync(new FileInfo("KASKASKAS/tenistas_exportados_no_crea
     ok => Console.WriteLine($"Exportados {ok} tenistas"),
     error => Console.WriteLine(error)
 );
+
+
+// Ahora vamos con el almacenamiento JSON
+var storageJson = new TenistasStorageJson();
+
+var tenistasJsonResult = await storageJson.ImportAsync(new FileInfo("Data/tenistas.json"));
+
+tenistasJsonResult.Match(
+    ok => Console.WriteLine($"Importado {ok.Count} tenistas"),
+    error => Console.WriteLine(error)
+);
+
+// no existe
+var noExisteJson = await storageJson.ImportAsync(new FileInfo("Data/tenistas_no_existe.json"));
+
+noExisteJson.Match(
+    ok => Console.WriteLine($"Importado {ok.Count} tenistas"),
+    error => Console.WriteLine(error)
+);
+
+// Escribimos los tenistas importados
+await storageJson.ExportAsync(new FileInfo("Data/tenistas_exportados.json"), tenistasJsonResult.Value).Match(
+    ok => Console.WriteLine($"Exportados {ok} tenistas"),
+    error => Console.WriteLine(error)
+);
+
+// Escribimos los tenistas importados en un fichero que no se puede crear
+await storageJson.ExportAsync(new FileInfo("KASKASKAS/tenistas_exportados_no_crear.json"), tenistasJsonResult.Value).Match(
+    ok => Console.WriteLine($"Exportados {ok} tenistas"),
+    error => Console.WriteLine(error)
+);

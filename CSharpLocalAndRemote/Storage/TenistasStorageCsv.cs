@@ -16,7 +16,7 @@ public class TenistasStorageCsv : ITenistasStorage
     public async Task<Result<List<Tenista>, TenistaError.StorageError>> ImportAsync(FileInfo file)
     {
         logger.Debug("Importando fichero de csv {file}", file.FullName);
-        return await readLinesAsync(file);
+        return await ReadLinesAsync(file);
     }
 
     public async Task<Result<int, TenistaError.StorageError>> ExportAsync(FileInfo file, List<Tenista> data)
@@ -41,12 +41,13 @@ public class TenistasStorageCsv : ITenistasStorage
                 error => Task.FromResult(Result.Failure<int, TenistaError.StorageError>(error)));
     }
 
-    private async Task<Result<List<Tenista>, TenistaError.StorageError>> readLinesAsync(FileInfo file)
+    private async Task<Result<List<Tenista>, TenistaError.StorageError>> ReadLinesAsync(FileInfo file)
     {
         if (!File.Exists(file.FullName))
             return Result.Failure<List<Tenista>, TenistaError.StorageError>(
                 new TenistaError.StorageError($"El fichero no existe {file.FullName}"));
-        var tenistas = File.ReadAllLines(file.FullName, Encoding.UTF8)
+        var lines = await File.ReadAllLinesAsync(file.FullName, Encoding.UTF8);
+        var tenistas = lines
             .Skip(1)
             .Select(line => line.Split(',')) // Dividimos la línea en celdas
             .Select(fila => fila.Select(item => item.Trim()).ToArray()) // Limpiamos los espacios en blanco

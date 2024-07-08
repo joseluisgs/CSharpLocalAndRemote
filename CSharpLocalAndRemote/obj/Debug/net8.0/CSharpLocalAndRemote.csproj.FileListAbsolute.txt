@@ -22,3 +22,4 @@ C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Data\tenistas.json
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Data\tenistas2.csv
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Data\tenistas3.json
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\Newtonsoft.Json.dll

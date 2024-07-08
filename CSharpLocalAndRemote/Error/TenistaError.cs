@@ -2,11 +2,11 @@
 
 public abstract class TenistaError
 {
-    private string Message { get; init; }
+    private string? Message { get; init; }
 
     public override string ToString()
     {
-        return Message;
+        return Message ?? "ERROR";
     }
 
     public class StorageError : TenistaError

@@ -1,0 +1,15 @@
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\CSharpLocalAndRemote.exe
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\CSharpLocalAndRemote.deps.json
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\CSharpLocalAndRemote.runtimeconfig.json
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\CSharpLocalAndRemote.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\bin\Debug\net8.0\CSharpLocalAndRemote.pdb
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.AssemblyInfoInputs.cache
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.AssemblyInfo.cs
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.csproj.CoreCompileInputs.cache
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.sourcelink.json
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\refint\CSharpLocalAndRemote.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.pdb
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\CSharpLocalAndRemote.genruntimeconfig.cache
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\CSharpLocalAndRemote\obj\Debug\net8.0\ref\CSharpLocalAndRemote.dll

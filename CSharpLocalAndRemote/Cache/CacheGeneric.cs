@@ -5,9 +5,10 @@ namespace CSharpLocalAndRemote.Cache;
 
 public class CacheGeneric<K, T> : ICache<K, T>
 {
+    // Lista enlazada para mantener el orden de los elementos en la cache
     private readonly LinkedList<(K key, T value)> _cacheList; // Lista enlazada de nodos para mantener el LRU
 
-    // Mapa de claves a nodos de la lista enlazada
+    // Mapa de claves a nodos de la lista enlazada y la busqueda de elementos en O(1)
     private readonly Dictionary<K, LinkedListNode<(K key, T value)>> _cacheMap;
     private readonly int _cacheSize;
     private readonly Logger logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();

@@ -102,7 +102,31 @@ En todo momento trabajaremos la asincronía con [Task]https://learn.microsoft.co
 [Result](https://github.com/vkhorikov/CSharpFunctionalExtensions).
 
 Enlace a
-los [commit de la sección](https://github.com/joseluisgs/KotlinLocalAndRemote/tree/f4cf8d903a9ecb80f36822d870144ea2b8defd57).
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/23b2b10da417b9ad80cec06bed4dea80dfc5fc2b).
+
+## Cache en Memoria
+
+Para realizar la caché en memoria, crearemos una interfaz genérica `Cache` que definirá las operaciones de lectura y
+escritura de datos.
+
+Ene ste momento tenemos dos alternativas: FIFO y LRU.
+
+- FIFO: First In First Out, es decir, el primer elemento que entra es el primero en salir. Como ventajas es más sencillo
+  de implementar, no necesita de un contador de accesos ni de un contador de tiempo. Como desventajas no tiene en cuenta
+  la frecuencia de uso de los elementos, ni el tiempo de uso de los elementos, ni la importancia de los elementos.
+- LRU: Least Recently Used, es decir, el elemento menos recientemente usado es el primero en salir. Como ventajas tiene
+  en cuenta la frecuencia de uso de los elementos, el tiempo de uso de los elementos y la importancia de los elementos.
+  Como desventajas es más complejo de implementar, necesita de un contador de accesos y de un contador de tiempo.
+
+Para la implementación de la caché en memoria con LRU usaremos un truco si conoces bien las colecciones
+como `Dictionary<K, LinkedListNode<(K key, T value)>> _cacheMap;` que nos permite tener acceso a los elementos de forma
+rápida y eficiente y `LinkedList<(K key, T value)> _cacheList;` que nos permite tener acceso a los elementos de forma por orden de acceso.
+
+Combinando ambas estructuras de datos, podemos implementar una caché en memoria con LRU de forma sencilla y eficiente.
+
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/060be6ad2f1125ee52645dd904dafa88ecb384e2).
 
 
 ## Test

@@ -27,16 +27,25 @@ public class TenistasStorageCsv : ITenistasStorage
             .Match(
                 async f =>
                 {
-                    // Escibimos la cabecera del fichero de forma asíncrona
-                    await File.WriteAllTextAsync(f.FullName,
-                        "id,nombre,pais,altura,peso,puntos,mano,fechaNacimiento,createdAt,updatedAt,deletedAt,isDeleted\n");
-                    // Convertimos los tenistas a la representación en cadena y los escribimos de manera asíncrona
-                    var tenistaDtos = data.Select(tenista => tenista.ToTenistaDto());
-                    foreach (var tenistaDto in tenistaDtos)
-                        await File.AppendAllTextAsync(f.FullName,
-                            $"{tenistaDto.Id},{tenistaDto.Nombre},{tenistaDto.Pais},{tenistaDto.Altura},{tenistaDto.Peso},{tenistaDto.Puntos},{tenistaDto.Mano},{tenistaDto.FechaNacimiento},{tenistaDto.CreatedAt},{tenistaDto.UpdatedAt},{tenistaDto.IsDeleted}\n");
-                    // Retornamos el resultado exitoso con la cantidad de tenistas exportados
-                    return Result.Success<int, TenistaError.StorageError>(data.Count);
+                    try
+                    {
+                        // Escibimos la cabecera del fichero de forma asíncrona
+                        await File.WriteAllTextAsync(f.FullName,
+                            "id,nombre,pais,altura,peso,puntos,mano,fechaNacimiento,createdAt,updatedAt,deletedAt,isDeleted\n");
+                        // Convertimos los tenistas a la representación en cadena y los escribimos de manera asíncrona
+                        var tenistaDtos = data.Select(tenista => tenista.ToTenistaDto());
+                        foreach (var tenistaDto in tenistaDtos)
+                            await File.AppendAllTextAsync(f.FullName,
+                                $"{tenistaDto.Id},{tenistaDto.Nombre},{tenistaDto.Pais},{tenistaDto.Altura},{tenistaDto.Peso},{tenistaDto.Puntos},{tenistaDto.Mano},{tenistaDto.FechaNacimiento},{tenistaDto.CreatedAt},{tenistaDto.UpdatedAt},{tenistaDto.IsDeleted}\n");
+                        // Retornamos el resultado exitoso con la cantidad de tenistas exportados
+                        return Result.Success<int, TenistaError.StorageError>(data.Count);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Result.Failure<int, TenistaError.StorageError>(
+                            new TenistaError.StorageError(
+                                $"No se puede escribir en el fichero {file.FullName}: {ex.Message}"));
+                    }
                 },
                 error => Task.FromResult(Result.Failure<int, TenistaError.StorageError>(error)));
     }

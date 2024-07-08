@@ -1,4 +1,5 @@
-﻿using CSharpLocalAndRemote.Dto;
+﻿using System.ComponentModel;
+using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.Mapper;
 using CSharpLocalAndRemote.model;
 
@@ -33,38 +34,42 @@ public class TenistaMapperTest
     );
 
     [Test]
+    [DisplayName("Convertir un TenistaDto en un Tenista")]
     public void ToTenista()
     {
         var testTenista = tenistaDto.ToTenista();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(tenista.Id, testTenista.Id, "Id deben ser iguales");
-            Assert.AreEqual(tenista.Nombre, testTenista.Nombre, "Nombre deben ser iguales");
-            Assert.AreEqual(tenista.Pais, testTenista.Pais, "Pais deben ser iguales");
-            Assert.AreEqual(tenista.Altura, testTenista.Altura, "Altura deben ser iguales");
-            Assert.AreEqual(tenista.Peso, testTenista.Peso, "Peso deben ser iguales");
-            Assert.AreEqual(tenista.Puntos, testTenista.Puntos, "Puntos deben ser iguales");
-            Assert.AreEqual(tenista.Mano, testTenista.Mano, "Mano deben ser iguales");
-            Assert.AreEqual(tenista.FechaNacimiento, testTenista.FechaNacimiento, "FechaNacimiento deben ser iguales");
-            Assert.AreEqual(tenista.IsDeleted, testTenista.IsDeleted, "IsDeleted deben ser iguales");
+            Assert.That(testTenista.Id, Is.EqualTo(tenista.Id), "Id deben ser iguales");
+            Assert.That(testTenista.Nombre, Is.EqualTo(tenista.Nombre), "Nombre deben ser iguales");
+            Assert.That(testTenista.Pais, Is.EqualTo(tenista.Pais), "Pais deben ser iguales");
+            Assert.That(testTenista.Altura, Is.EqualTo(tenista.Altura), "Altura deben ser iguales");
+            Assert.That(testTenista.Peso, Is.EqualTo(tenista.Peso), "Peso deben ser iguales");
+            Assert.That(testTenista.Puntos, Is.EqualTo(tenista.Puntos), "Puntos deben ser iguales");
+            Assert.That(testTenista.Mano, Is.EqualTo(tenista.Mano), "Mano deben ser iguales");
+            Assert.That(testTenista.FechaNacimiento, Is.EqualTo(tenista.FechaNacimiento),
+                "FechaNacimiento deben ser iguales");
+            Assert.That(testTenista.IsDeleted, Is.EqualTo(tenista.IsDeleted), "IsDeleted deben ser iguales");
         });
     }
 
     [Test]
+    [DisplayName("Convertir un Tenista en un TenistaDto")]
     public void ToTenistaDto()
     {
         var testDto = tenista.ToTenistaDto();
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(tenistaDto.Id, testDto.Id, "Id deben ser iguales");
-            Assert.AreEqual(tenistaDto.Nombre, testDto.Nombre, "Nombre deben ser iguales");
-            Assert.AreEqual(tenistaDto.Pais, testDto.Pais, "Pais deben ser iguales");
-            Assert.AreEqual(tenistaDto.Altura, testDto.Altura, "Altura deben ser iguales");
-            Assert.AreEqual(tenistaDto.Peso, testDto.Peso, "Peso deben ser iguales");
-            Assert.AreEqual(tenistaDto.Puntos, testDto.Puntos, "Puntos deben ser iguales");
-            Assert.AreEqual(tenistaDto.Mano, testDto.Mano, "Mano deben ser iguales");
-            Assert.AreEqual(tenistaDto.FechaNacimiento, testDto.FechaNacimiento, "FechaNacimiento deben ser iguales");
-            Assert.AreEqual(tenistaDto.IsDeleted, testDto.IsDeleted, "IsDeleted deben ser iguales");
+            Assert.That(testDto.Id, Is.EqualTo(tenistaDto.Id), "Id deben ser iguales");
+            Assert.That(testDto.Nombre, Is.EqualTo(tenistaDto.Nombre), "Nombre deben ser iguales");
+            Assert.That(testDto.Pais, Is.EqualTo(tenistaDto.Pais), "Pais deben ser iguales");
+            Assert.That(testDto.Altura, Is.EqualTo(tenistaDto.Altura), "Altura deben ser iguales");
+            Assert.That(testDto.Peso, Is.EqualTo(tenistaDto.Peso), "Peso deben ser iguales");
+            Assert.That(testDto.Puntos, Is.EqualTo(tenistaDto.Puntos), "Puntos deben ser iguales");
+            Assert.That(testDto.Mano, Is.EqualTo(tenistaDto.Mano), "Mano deben ser iguales");
+            Assert.That(testDto.FechaNacimiento, Is.EqualTo(tenistaDto.FechaNacimiento),
+                "FechaNacimiento deben ser iguales");
+            Assert.That(testDto.IsDeleted, Is.EqualTo(tenistaDto.IsDeleted), "IsDeleted deben ser iguales");
         });
     }
 }

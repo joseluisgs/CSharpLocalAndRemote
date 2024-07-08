@@ -56,7 +56,7 @@ de eventos y flujos de datos.
 
 En C#, la programación asíncrona y reactiva se puede realizar
 con [Async/Await](https://learn.microsoft.com/es-es/dotnet/csharp/asynchronous-programming/)
-y [IAsyncEnumerable y Linq](https://learn.microsoft.com/es-es/shows/on-net/supporting-iasyncenumerable-with-linq). 
+y [IAsyncEnumerable y Linq](https://learn.microsoft.com/es-es/shows/on-net/supporting-iasyncenumerable-with-linq) y [Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task?view=net-8.0)
 Con Async/Await se pueden realizar tareas en segundo plano de forma sencilla y eficiente. Con IAsyncEnumerable y Linq se
 pueden realizar operaciones asíncronas de forma sencilla y eficiente.
 
@@ -81,6 +81,28 @@ error.
 
 De esta manera podemos encadenar operaciones de forma sencilla y eficiente. Si una operación falla, se sigue el Error
 Path. Si una operación tiene éxito, se sigue el Happy Path.
+
+## Almacenamiento y Serialización
+
+El primer paso es crear un servicio de almacenamiento y serialización de datos para realizar las operaciones de lectura
+y escritura de datos. Para ello, crearemos una interfaz `StorageService` que definirá las operaciones de lectura y
+escritura.
+
+Luego, crearemos una implementación de esta interfaz para almacenar los datos en formatos CSV y JSON.
+Para facilitar la serialización y deserialización de los datos, utilizaremos la librería de
+Kotlin [Newtonsoft.Json (también conocida como Json.NET)](https://www.newtonsoft.com/json).
+
+Haremos uso de mapeadores para convertir los datos de un formato a otro. Para ello haremos uso de las [funciones de
+extensión de C#](https://learn.microsoft.com/es-es/dotnet/csharp/programming-guide/classes-and-structs/extension-methods). Estas funciones nos permiten añadir nuevas
+funcionalidades a las clases sin modificarlas. En este
+caso añadiremos
+funciones de extensión para convertir los datos de un formato a otro.
+
+En todo momento trabajaremos la asincronía con [Task]https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task?view=net-8.0) y trabajaremos ROP con
+[Result](https://github.com/vkhorikov/CSharpFunctionalExtensions).
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/KotlinLocalAndRemote/tree/f4cf8d903a9ecb80f36822d870144ea2b8defd57).
 
 
 ## Test

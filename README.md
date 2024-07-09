@@ -128,6 +128,29 @@ Combinando ambas estructuras de datos, podemos implementar una caché en memoria
 Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/060be6ad2f1125ee52645dd904dafa88ecb384e2).
 
+## Repositorio Local
+
+Para la realización del repositorio local, hemos usado [Entity Framework](https://learn.microsoft.com/en-us/ef/core/),
+que es un ORM (Object-Relational Mapping) que nos permite trabajar con bases de datos de forma sencilla y eficiente.
+
+Para ello debemos tener en cuenta dos objetos claves:
+- DbContext: Es el objeto que representa la base de datos. Contiene las tablas y las relaciones entre las tablas.
+- DbSet: Es el objeto que representa una tabla. Contiene los registros de la tabla.
+
+A la hora de mappear las tablas, podemos hacer uso de [Data Annotations](https://learn.microsoft.com/en-us/ef/core/modeling/data-annotations) y de [Fluent API](https://learn.microsoft.com/en-us/ef/core/modeling/).
+
+En nuestro caso hemos usado las dos variantes para mostrar ambas formas de mapear las tablas, una para unos casos y otra para otros.
+
+A su vez, gracias al uso de Entity Framework, podemos realizar operaciones asíncronas de forma sencilla y eficiente.
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/fc76a44c7908b4c8d648dd149f8c59135649b024).
+
+
+
+
+
+
 
 ## Test
 
@@ -166,3 +189,7 @@ las referencias necesarias.
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
     </ItemGroup>
 ```
+
+A la hora de testear repositorios se ha seguido las guía de [Testing EF Core Applications](https://learn.microsoft.com/en-us/ef/core/testing/), al movernos 
+en una base de datos relacional, lo lógico es que sigamos con SQLite en memoria. Recuerda que para configurar el test debes abrir y cerrar la conexión a la base de datos.
+

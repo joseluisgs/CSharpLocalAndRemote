@@ -4,6 +4,7 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Database;
 using CSharpLocalAndRemote.Repository;
+using CSharpLocalAndRemote.Rest;
 using CSharpLocalAndRemote.Storage;
 using Microsoft.EntityFrameworkCore;
 
@@ -130,3 +131,33 @@ repository.GetAllAsync().Result.Match(
     },
     error => Console.WriteLine($"Error al obtener los tenistas: {error}")
 );
+
+// Exportamos los tenistas a un fichero JSON
+storageJson.ExportAsync(new FileInfo("Data/tenistas_export.json"), tenistas).Result.Match(
+    count => Console.WriteLine($"Tenistas exportados: {count}"),
+    error => Console.WriteLine($"Error al exportar los tenistas: {error}")
+);
+
+const string baseUrl = "https://my-json-server.typicode.com/joseluisgs/KotlinLocalAndRemote/";
+var client = RefitClient.CreateClient(baseUrl);
+try
+{
+    var lista = await client.GetAll();
+    Console.WriteLine("Lista de tenistas:");
+    foreach (var tenista in lista) Console.WriteLine($"ID: {tenista.Id}, Nombre: {tenista.Nombre}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
+}
+
+// Ahora un tenista con ID 1
+try
+{
+    var tenista = await client.GetById(1);
+    Console.WriteLine($"Tenista con ID 1: {tenista}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
+}

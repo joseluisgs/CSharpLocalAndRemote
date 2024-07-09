@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "DbNFkMduAJMS0dt7Uca/5gWT+kheO6lPeg7keyykf9VN+9olJNOV9wQmxyb+LLOJun0e90L1o1jSPPPiTa3NWg==",
+  "dgSpecHash": "Qs7R1zZ+XdzJ9SRYkPvLU2AFOqQeut6AwR5BNxheGbvZgGnu4hXZIKlz6aN3rcSjQ0oiRQ0ytIUzjf3Rfd8k6w==",
   "success": true,
   "projectFilePath": "C:\\Users\\joseluisgs\\Projects\\CSharpLocalAndRemote\\Tests\\Tests.csproj",
   "expectedPackageFiles": [
@@ -36,6 +36,8 @@
     "C:\\Users\\joseluisgs\\.nuget\\packages\\nunit\\3.14.0\\nunit.3.14.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\nunit.analyzers\\3.9.0\\nunit.analyzers.3.9.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\nunit3testadapter\\4.5.0\\nunit3testadapter.4.5.0.nupkg.sha512",
+    "C:\\Users\\joseluisgs\\.nuget\\packages\\refit\\7.1.2\\refit.7.1.2.nupkg.sha512",
+    "C:\\Users\\joseluisgs\\.nuget\\packages\\refit.newtonsoft.json\\7.1.2\\refit.newtonsoft.json.7.1.2.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\serilog\\4.0.0\\serilog.4.0.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\serilog.expressions\\5.0.0\\serilog.expressions.5.0.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\serilog.sinks.console\\6.0.0\\serilog.sinks.console.6.0.0.nupkg.sha512",
@@ -45,6 +47,7 @@
     "C:\\Users\\joseluisgs\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.6\\sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\system.diagnostics.eventlog\\6.0.0\\system.diagnostics.eventlog.6.0.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
+    "C:\\Users\\joseluisgs\\.nuget\\packages\\system.net.http.json\\8.0.0\\system.net.http.json.8.0.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\system.reflection.metadata\\1.6.0\\system.reflection.metadata.1.6.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512"

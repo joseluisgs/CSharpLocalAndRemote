@@ -54,6 +54,14 @@
               "target": "Package",
               "version": "[13.0.3, )"
             },
+            "Refit": {
+              "target": "Package",
+              "version": "[7.1.2, )"
+            },
+            "Refit.Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[7.1.2, )"
+            },
             "Serilog": {
               "target": "Package",
               "version": "[4.0.0, )"

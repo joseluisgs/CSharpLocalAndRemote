@@ -13,7 +13,7 @@
           "Microsoft.EntityFrameworkCore.Sqlite": "8.0.6",
           "Newtonsoft.Json": "13.0.3",
           "Serilog": "4.0.0",
-          "Serilog.Enrichers.Thread": "4.0.0",
+          "Serilog.Expressions": "5.0.0",
           "Serilog.Sinks.Console": "6.0.0"
         },
         "runtime": {
@@ -221,14 +221,14 @@
           }
         }
       },
-      "Serilog.Enrichers.Thread/4.0.0": {
+      "Serilog.Expressions/5.0.0": {
         "dependencies": {
           "Serilog": "4.0.0"
         },
         "runtime": {
-          "lib/net8.0/Serilog.Enrichers.Thread.dll": {
-            "assemblyVersion": "4.0.0.0",
-            "fileVersion": "4.0.0.0"
+          "lib/net8.0/Serilog.Expressions.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
           }
         }
       },
@@ -536,12 +536,12 @@
       "path": "serilog/4.0.0",
       "hashPath": "serilog.4.0.0.nupkg.sha512"
     },
-    "Serilog.Enrichers.Thread/4.0.0": {
+    "Serilog.Expressions/5.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-C7BK25a1rhUyr+Tp+1BYcVlBJq7M2VCHlIgnwoIUVJcicM9jYcvQK18+OeHiXw7uLPSjqWxJIp1EfaZ/RGmEwA==",
-      "path": "serilog.enrichers.thread/4.0.0",
-      "hashPath": "serilog.enrichers.thread.4.0.0.nupkg.sha512"
+      "sha512": "sha512-QhZjXtUcA2QfQRA60m+DfyIfidKsQV7HBstbYEDqzJKMbJH/KnKthkkjciRuYrmFE+scWv1JibC5LlXrdtOUmw==",
+      "path": "serilog.expressions/5.0.0",
+      "hashPath": "serilog.expressions.5.0.0.nupkg.sha512"
     },
     "Serilog.Sinks.Console/6.0.0": {
       "type": "package",

@@ -2,13 +2,13 @@
 
 namespace CSharpLocalAndRemote.Cache;
 
-public class CacheGeneric<K, T> : ICache<K, T> where K : notnull
+public class CacheGeneric<TK, T> : ICache<TK, T> where TK : notnull
 {
     // Lista enlazada para mantener el orden de los elementos en la cache
-    private readonly LinkedList<(K key, T value)> _cacheList; // Lista enlazada de nodos para mantener el LRU
+    private readonly LinkedList<(TK key, T value)> _cacheList; // Lista enlazada de nodos para mantener el LRU
 
     // Mapa de claves a nodos de la lista enlazada y la busqueda de elementos en O(1)
-    private readonly Dictionary<K, LinkedListNode<(K key, T value)>> _cacheMap;
+    private readonly Dictionary<TK, LinkedListNode<(TK key, T value)>> _cacheMap;
     private readonly int _cacheSize;
 
     private readonly Serilog.Core.Logger Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console()
@@ -17,11 +17,11 @@ public class CacheGeneric<K, T> : ICache<K, T> where K : notnull
     public CacheGeneric(int cacheSize)
     {
         _cacheSize = cacheSize;
-        _cacheMap = new Dictionary<K, LinkedListNode<(K key, T value)>>(_cacheSize);
-        _cacheList = new LinkedList<(K key, T value)>();
+        _cacheMap = new Dictionary<TK, LinkedListNode<(TK key, T value)>>(_cacheSize);
+        _cacheList = new LinkedList<(TK key, T value)>();
     }
 
-    public T? Get(K key)
+    public T? Get(TK key)
     {
         Logger.Debug("Obteniendo valor de la cache para la clave {key}", key);
         if (!_cacheMap.TryGetValue(key, out var node))
@@ -35,7 +35,7 @@ public class CacheGeneric<K, T> : ICache<K, T> where K : notnull
         return node.Value.value;
     }
 
-    public void Put(K key, T value)
+    public void Put(TK key, T value)
     {
         Logger.Debug("Insertando valor en la cache para la clave {key}", key);
         if (_cacheMap.TryGetValue(key, out var node))
@@ -55,14 +55,14 @@ public class CacheGeneric<K, T> : ICache<K, T> where K : notnull
                 _cacheMap.Remove(lru!.Value.key);
             }
 
-            node = new LinkedListNode<(K key, T value)>((key, value));
+            node = new LinkedListNode<(TK key, T value)>((key, value));
             _cacheMap[key] = node;
         }
 
         _cacheList.AddFirst(node);
     }
 
-    public void Remove(K key)
+    public void Remove(TK key)
     {
         Logger.Debug("Eliminando valor de la cache para la clave {key}", key);
         if (!_cacheMap.TryGetValue(key, out var node)) return;
@@ -81,9 +81,9 @@ public class CacheGeneric<K, T> : ICache<K, T> where K : notnull
         return _cacheMap.Count;
     }
 
-    public ISet<K> Keys()
+    public ISet<TK> Keys()
     {
-        return new HashSet<K>(_cacheMap.Keys);
+        return new HashSet<TK>(_cacheMap.Keys);
     }
 
     public ICollection<T> Values()
@@ -93,7 +93,7 @@ public class CacheGeneric<K, T> : ICache<K, T> where K : notnull
         return values;
     }
 
-    public bool ContainsKey(K key)
+    public bool ContainsKey(TK key)
     {
         return _cacheMap.ContainsKey(key);
     }

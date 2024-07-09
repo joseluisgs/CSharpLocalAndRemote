@@ -2,8 +2,8 @@
 
 namespace CSharpLocalAndRemote.Storage;
 
-public interface ISerializationStorage<T, E>
+public interface ISerializationStorage<T, TE>
 {
-    Task<Result<List<T>, E>> ImportAsync(FileInfo file);
-    Task<Result<int, E>> ExportAsync(FileInfo file, List<T> data);
+    Task<Result<List<T>, TE>> ImportAsync(FileInfo file);
+    Task<Result<int, TE>> ExportAsync(FileInfo file, List<T> data);
 }

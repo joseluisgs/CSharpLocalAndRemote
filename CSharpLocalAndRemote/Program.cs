@@ -19,14 +19,16 @@ var tenistas = storageJson.ImportAsync(new FileInfo("Data/tenistas.json")).Resul
 Console.WriteLine($"Tenistas importados: {tenistas.Count}");
 
 
-// Opciones de configuración de la base de datos
-var optionsBuilder = new DbContextOptionsBuilder<DbContext>()
-    .UseSqlite("Data Source=tenistas.db");
-
 // Creamos el EntityManager, que es el encargado encapsular el trabajo con la base de datos
 // Para la entidad TenistaEntity (que es la representación de la tabla Tenista en la base de datos)
 // y le pasamos el contexto de la base de datos, que es el encargado de la conexión con la base de datos
-var manager = new EntityManager<TenistaEntity>(new TenistasDbContext(optionsBuilder.Options));
+// que a su vez necesita las opciones de configuración de la base de datos
+var manager = new EntityManager<TenistaEntity>(
+    new TenistasDbContext(new DbContextOptionsBuilder<DbContext>()
+        .UseSqlite("Data Source=tenistas.db")
+        .Options
+    )
+);
 
 var repository = new TenistasRepositoryLocal(manager.Context);
 

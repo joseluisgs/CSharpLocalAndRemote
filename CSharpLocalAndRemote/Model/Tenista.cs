@@ -4,7 +4,7 @@ using System;
 
 public class Tenista
 {
-    public const long NEW_ID = 0L;
+    public const long NewId = 0L;
 
     // Constructor
     public Tenista(
@@ -18,7 +18,7 @@ public class Tenista
         DateTime? createdAt = null, // ? -> Nullable 
         DateTime? updatedAt = null,
         bool isDeleted = false, 
-        long id = NEW_ID
+        long id = NewId
         )
     {
         Id = id;

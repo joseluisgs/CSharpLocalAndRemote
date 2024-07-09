@@ -2,15 +2,15 @@
 
 namespace CSharpLocalAndRemote.Repository;
 
-public interface IRepository<ID, T, E>
+public interface IRepository<TId, T, TE>
 {
-    Task<Result<List<T>, E>> GetAllAsync();
+    Task<Result<List<T>, TE>> GetAllAsync();
 
-    Task<Result<T, E>> GetByIdAsync(ID id);
+    Task<Result<T, TE>> GetByIdAsync(TId id);
 
-    Task<Result<T, E>> SaveAsync(T entity);
+    Task<Result<T, TE>> SaveAsync(T entity);
 
-    Task<Result<T, E>> UpdateAsync(ID id, T entity);
+    Task<Result<T, TE>> UpdateAsync(TId id, T entity);
 
-    Task<Result<ID, E>> DeleteAsync(ID id);
+    Task<Result<TId, TE>> DeleteAsync(TId id);
 }

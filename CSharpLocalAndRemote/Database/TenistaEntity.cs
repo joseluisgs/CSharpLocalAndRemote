@@ -11,9 +11,13 @@ public class TenistaEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
-    [Required] public string Nombre { get; set; }
+    [Required] 
+    [MaxLength(100)]
+    public string Nombre { get; set; } = string.Empty;
 
-    [Required] public string Pais { get; set; }
+    [Required] 
+    [MaxLength(50)]
+    public string Pais { get; set; } = string.Empty;
 
     [Required]
     [Range(0, int.MaxValue, ErrorMessage = "Altura debe ser mayor o igual a 0")]
@@ -28,13 +32,13 @@ public class TenistaEntity
     [DefaultValue(0)]
     public int Puntos { get; set; }
 
-    [Required] public string Mano { get; set; }
+    [Required] public string Mano { get; set; } = string.Empty;
 
-    [Required] public string FechaNacimiento { get; set; }
+    [Required] public string FechaNacimiento { get; set; } = string.Empty;
 
-    [Required] public string CreatedAt { get; set; }
+    [Required] public string CreatedAt { get; set; } = string.Empty;
 
-    [Required] public string UpdatedAt { get; set; }
+    [Required] public string UpdatedAt { get; set; } = string.Empty;
 
     [DefaultValue(false)] public bool IsDeleted { get; set; }
 }

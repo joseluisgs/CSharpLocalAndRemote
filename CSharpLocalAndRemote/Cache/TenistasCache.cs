@@ -2,9 +2,4 @@
 
 namespace CSharpLocalAndRemote.Cache;
 
-public class TenistasCacheImpl : CacheGeneric<long, Tenista>, ITenistasCache
-{
-    public TenistasCacheImpl(int cacheSize) : base(cacheSize)
-    {
-    }
-}
+public class TenistasCacheImpl(int cacheSize) : CacheGeneric<long, Tenista>(cacheSize), ITenistasCache;

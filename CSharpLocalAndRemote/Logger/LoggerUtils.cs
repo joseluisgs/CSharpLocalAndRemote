@@ -3,7 +3,7 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 namespace CSharpLocalAndRemote.Logger;
 
-public class LoggerUtils<T>
+public abstract class LoggerUtils<T>
 {
     public static Serilog.Core.Logger GetLogger()
     {

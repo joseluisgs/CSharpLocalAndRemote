@@ -1,15 +1,15 @@
 ﻿namespace CSharpLocalAndRemote.Cache;
 
-public interface ICache<K, T>
+public interface ICache<TK, T>
 {
-    T? Get(K key);
-    void Put(K key, T value);
-    void Remove(K key);
+    T? Get(TK key);
+    void Put(TK key, T value);
+    void Remove(TK key);
     void Clear();
     int Size();
-    ISet<K> Keys();
+    ISet<TK> Keys();
     ICollection<T> Values();
-    bool ContainsKey(K key);
+    bool ContainsKey(TK key);
     bool ContainsValue(T value);
     bool IsEmpty();
 

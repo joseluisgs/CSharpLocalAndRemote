@@ -42,7 +42,7 @@ public class TenistasRepositoryLocal : ITenistasRepository
         _logger.Debug("Obteniendo el tenista local en bd con id {id}", id);
         try
         {
-            var entityToFind = await _db.Set<TenistaEntity>().FindAsync(id);
+            var entityToFind = await _db.Set<TenistaEntity>().FindAsync(id); // Buscamos el tenista por id
             // Si no se encuentra el tenista, retornamos un error con operador ternario
             return entityToFind is null
                 ? Result.Failure<Tenista, TenistaError>(new TenistaError.DatabaseError(
@@ -65,7 +65,7 @@ public class TenistasRepositoryLocal : ITenistasRepository
             var entityToSave = entity.ToTenistaEntity();
             entityToSave.CreatedAt = timeStamp; // Añadimos la fecha de creación
             entityToSave.UpdatedAt = timeStamp; // Añadimos la fecha de actualización
-            entityToSave.Id = Tenista.NEW_ID; // Añadimos un id nuevo
+            entityToSave.Id = Tenista.NewId; // Añadimos un id nuevo
             _db.Set<TenistaEntity>().Add(entityToSave); // Añadimos el tenista a la base de datos
             await _db.SaveChangesAsync(); // Guardamos los cambios
             return Result.Success<Tenista, TenistaError>(entityToSave.ToTenista());

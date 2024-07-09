@@ -1,7 +1,6 @@
-﻿using CSharpLocalAndRemote.Database;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace CSharpLocalAndRemote.Mapper;
+namespace CSharpLocalAndRemote.Database;
 
 // El DbContext es la clase que se encarga de la conexión con la base de datos.
 public class TenistasDbContext : DbContext

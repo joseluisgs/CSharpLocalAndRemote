@@ -33,7 +33,7 @@ public class CacheGenericTest
         Assert.Multiple(() =>
         {
             Assert.NotNull(cache.Get(tenista1.Id), "El tenista debería estar presente en la caché");
-            Assert.AreEqual(tenista1, cache.Get(tenista1.Id),
+            Assert.That(cache.Get(tenista1.Id), Is.EqualTo(tenista1),
                 "El tenista recuperado debería ser igual al tenista almacenado");
         });
     }
@@ -61,10 +61,10 @@ public class CacheGenericTest
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(2, cache.Size(), "La caché debería contener dos elementos");
-            Assert.AreEqual(tenista1, cache.Get(tenista1.Id),
+            Assert.That(cache.Size(), Is.EqualTo(2), "La caché debería contener dos elementos");
+            Assert.That(cache.Get(tenista1.Id), Is.EqualTo(tenista1),
                 "El tenista1 recuperado debería ser igual al tenista1 almacenado");
-            Assert.AreEqual(tenista2, cache.Get(tenista2.Id),
+            Assert.That(cache.Get(tenista2.Id), Is.EqualTo(tenista2),
                 "El tenista2 recuperado debería ser igual al tenista2 almacenado");
         });
     }
@@ -88,11 +88,11 @@ public class CacheGenericTest
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(2, cache.Size(), "La caché debería tener dos elementos");
+            Assert.That(cache.Size(), Is.EqualTo(2), "La caché debería tener dos elementos");
             Assert.IsFalse(cache.ContainsKey(tenista2.Id), "La caché no debería contener tenista2");
             Assert.IsFalse(cache.ContainsKey(tenista3.Id), "La caché no debería contener tenista3");
-            Assert.AreEqual(tenista1, cache.Get(tenista1.Id), "El tenista1 debería estar aún en la caché");
-            Assert.AreEqual(tenista4, cache.Get(tenista4.Id), "El tenista4 debería estar en la caché");
+            Assert.That(cache.Get(tenista1.Id), Is.EqualTo(tenista1), "El tenista1 debería estar aún en la caché");
+            Assert.That(cache.Get(tenista4.Id), Is.EqualTo(tenista4), "El tenista4 debería estar en la caché");
         });
     }
 
@@ -111,7 +111,7 @@ public class CacheGenericTest
 
         Assert.Multiple(() =>
         {
-            Assert.AreEqual(0, cache.Size(), "La caché debería estar vacía");
+            Assert.That(cache.Size(), Is.EqualTo(0), "La caché debería estar vacía");
             Assert.IsFalse(cache.ContainsKey(tenista1.Id), "La caché no debería contener tenista1");
             Assert.IsFalse(cache.ContainsKey(tenista2.Id), "La caché no debería contener tenista2");
         });

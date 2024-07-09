@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace CSharpLocalAndRemote.Mapper;
+namespace CSharpLocalAndRemote.Database;
 
 // El EntityManager es la clase que se encarga de la conexión con la base de datos.
 // https://learn.microsoft.com/es-es/ef/core/

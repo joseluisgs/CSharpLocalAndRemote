@@ -32,4 +32,12 @@ public abstract class TenistaError
             Message = "ERROR: " + message;
         }
     }
+
+    public class ValidationError : TenistaError
+    {
+        public ValidationError(string message)
+        {
+            Message = "ERROR: " + message;
+        }
+    }
 }

@@ -1,31 +1,30 @@
 ﻿using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Database;
 using CSharpLocalAndRemote.Error;
+using CSharpLocalAndRemote.Logger;
 using CSharpLocalAndRemote.Mapper;
 using CSharpLocalAndRemote.model;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using Serilog.Core;
 
 namespace CSharpLocalAndRemote.Repository;
 
 public class TenistasRepositoryLocal : ITenistasRepository
 {
+    private readonly DbContext _db;
+    private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasRepositoryLocal>.GetLogger();
+
     public TenistasRepositoryLocal(DbContext dbContext)
     {
-        Db = dbContext;
+        _db = dbContext;
         Init();
     }
 
-    private DbContext Db { get; }
-    private Logger Logger { get; } = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
-
     public async Task<Result<List<Tenista>, TenistaError>> GetAllAsync()
     {
-        Logger.Debug("Obteniendo todos los tenistas locales en bd");
+        _logger.Debug("Obteniendo todos los tenistas locales en bd");
         try
         {
-            var tenistas = await Db.Set<TenistaEntity>() // Obtenemos todos los tenistas de la base de datos
+            var tenistas = await _db.Set<TenistaEntity>() // Obtenemos todos los tenistas de la base de datos
                 .Select(entity => entity.ToTenista()) // Convertimos los tenistas de entidad a modelo
                 .ToListAsync();
 
@@ -40,10 +39,10 @@ public class TenistasRepositoryLocal : ITenistasRepository
 
     public async Task<Result<Tenista, TenistaError>> GetByIdAsync(long id)
     {
-        Logger.Debug("Obteniendo el tenista local en bd con id {id}", id);
+        _logger.Debug("Obteniendo el tenista local en bd con id {id}", id);
         try
         {
-            var entityToFind = await Db.Set<TenistaEntity>().FindAsync(id);
+            var entityToFind = await _db.Set<TenistaEntity>().FindAsync(id);
             // Si no se encuentra el tenista, retornamos un error con operador ternario
             return entityToFind is null
                 ? Result.Failure<Tenista, TenistaError>(new TenistaError.DatabaseError(
@@ -59,15 +58,16 @@ public class TenistasRepositoryLocal : ITenistasRepository
 
     public async Task<Result<Tenista, TenistaError>> SaveAsync(Tenista entity)
     {
-        Logger.Debug("Guardando el tenista local en bd");
+        _logger.Debug("Guardando el tenista local en bd");
         try
         {
             var timeStamp = DateTime.Now.ToString("o"); // Obtenemos la fecha y hora actual
             var entityToSave = entity.ToTenistaEntity();
             entityToSave.CreatedAt = timeStamp; // Añadimos la fecha de creación
             entityToSave.UpdatedAt = timeStamp; // Añadimos la fecha de actualización
-            Db.Set<TenistaEntity>().Add(entityToSave); // Añadimos el tenista a la base de datos
-            await Db.SaveChangesAsync(); // Guardamos los cambios
+            entityToSave.Id = Tenista.NEW_ID; // Añadimos un id nuevo
+            _db.Set<TenistaEntity>().Add(entityToSave); // Añadimos el tenista a la base de datos
+            await _db.SaveChangesAsync(); // Guardamos los cambios
             return Result.Success<Tenista, TenistaError>(entityToSave.ToTenista());
         }
         catch (Exception ex)
@@ -79,10 +79,10 @@ public class TenistasRepositoryLocal : ITenistasRepository
 
     public async Task<Result<Tenista, TenistaError>> UpdateAsync(long id, Tenista entity)
     {
-        Logger.Debug("Actualizando el tenista local en bd con id {id}", id);
+        _logger.Debug("Actualizando el tenista local en bd con id {id}", id);
         try
         {
-            var entityToUpdate = await Db.Set<TenistaEntity>().FindAsync(id);
+            var entityToUpdate = await _db.Set<TenistaEntity>().FindAsync(id);
             if (entityToUpdate == null)
                 return Result.Failure<Tenista, TenistaError>(new TenistaError.DatabaseError(
                     $"El tenista con id {id} no se encontró en la base de datos."));
@@ -91,7 +91,7 @@ public class TenistasRepositoryLocal : ITenistasRepository
             entityToUpdate.UpdateFrom(entity.ToTenistaEntity()); // Actualizamos los campos de la entidad
             entityToUpdate.UpdatedAt = timeStamp; // Actualizamos la fecha de actualización
 
-            await Db.SaveChangesAsync(); // Guardamos los cambios
+            await _db.SaveChangesAsync(); // Guardamos los cambios
             return Result.Success<Tenista, TenistaError>(entityToUpdate.ToTenista());
         }
         catch (Exception ex)
@@ -103,16 +103,16 @@ public class TenistasRepositoryLocal : ITenistasRepository
 
     public async Task<Result<long, TenistaError>> DeleteAsync(long id)
     {
-        Logger.Debug("Borrando el tenista local en bd con id {id}", id);
+        _logger.Debug("Borrando el tenista local en bd con id {id}", id);
         try
         {
-            var entityToDelete = await Db.Set<TenistaEntity>().FindAsync(id);
+            var entityToDelete = await _db.Set<TenistaEntity>().FindAsync(id);
             if (entityToDelete == null)
                 return Result.Failure<long, TenistaError>(new TenistaError.DatabaseError(
                     $"El tenista con id {id} no se encontró en la base de datos."));
 
-            Db.Set<TenistaEntity>().Remove(entityToDelete);
-            await Db.SaveChangesAsync();
+            _db.Set<TenistaEntity>().Remove(entityToDelete);
+            await _db.SaveChangesAsync();
             return Result.Success<long, TenistaError>(id);
         }
         catch (Exception ex)
@@ -124,10 +124,10 @@ public class TenistasRepositoryLocal : ITenistasRepository
 
     private async void Init()
     {
-        Logger.Debug("Inicializando el repositorio local");
-        await Db.Database.EnsureCreatedAsync(); // Creamos la base de datos si no existe
-        await Db.SaveChangesAsync(); // Guardamos los cambios
-        await Db.RemoveAllAsync(); // Borramos todos los registros porque es un repositorio local
+        _logger.Debug("Inicializando el repositorio local");
+        await _db.Database.EnsureCreatedAsync(); // Creamos la base de datos si no existe
+        await _db.SaveChangesAsync(); // Guardamos los cambios
+        await _db.RemoveAllAsync(); // Borramos todos los registros porque es un repositorio local
     }
 }
 

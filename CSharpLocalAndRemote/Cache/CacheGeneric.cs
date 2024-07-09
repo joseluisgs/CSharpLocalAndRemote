@@ -1,9 +1,8 @@
 ﻿using Serilog;
-using Serilog.Core;
 
 namespace CSharpLocalAndRemote.Cache;
 
-public class CacheGeneric<K, T> : ICache<K, T>
+public class CacheGeneric<K, T> : ICache<K, T> where K : notnull
 {
     // Lista enlazada para mantener el orden de los elementos en la cache
     private readonly LinkedList<(K key, T value)> _cacheList; // Lista enlazada de nodos para mantener el LRU
@@ -11,7 +10,9 @@ public class CacheGeneric<K, T> : ICache<K, T>
     // Mapa de claves a nodos de la lista enlazada y la busqueda de elementos en O(1)
     private readonly Dictionary<K, LinkedListNode<(K key, T value)>> _cacheMap;
     private readonly int _cacheSize;
-    private readonly Logger logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+
+    private readonly Serilog.Core.Logger Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console()
+        .CreateLogger();
 
     public CacheGeneric(int cacheSize)
     {
@@ -22,7 +23,7 @@ public class CacheGeneric<K, T> : ICache<K, T>
 
     public T? Get(K key)
     {
-        logger.Debug("Obteniendo valor de la cache para la clave {key}", key);
+        Logger.Debug("Obteniendo valor de la cache para la clave {key}", key);
         if (!_cacheMap.TryGetValue(key, out var node))
             // Key
             return default;
@@ -36,7 +37,7 @@ public class CacheGeneric<K, T> : ICache<K, T>
 
     public void Put(K key, T value)
     {
-        logger.Debug("Insertando valor en la cache para la clave {key}", key);
+        Logger.Debug("Insertando valor en la cache para la clave {key}", key);
         if (_cacheMap.TryGetValue(key, out var node))
         {
             // Actualizamos el valor existente y lo movemos al frente (más recientemente usado)
@@ -63,7 +64,7 @@ public class CacheGeneric<K, T> : ICache<K, T>
 
     public void Remove(K key)
     {
-        logger.Debug("Eliminando valor de la cache para la clave {key}", key);
+        Logger.Debug("Eliminando valor de la cache para la clave {key}", key);
         if (!_cacheMap.TryGetValue(key, out var node)) return;
         _cacheList.Remove(node);
         _cacheMap.Remove(key);

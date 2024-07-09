@@ -2,27 +2,26 @@
 using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.Error;
+using CSharpLocalAndRemote.Logger;
 using CSharpLocalAndRemote.Mapper;
 using CSharpLocalAndRemote.model;
 using Newtonsoft.Json;
-using Serilog;
-using Serilog.Core;
 
 namespace CSharpLocalAndRemote.Storage;
 
 public class TenistasStorageJson : ITenistasStorage
 {
-    private Logger Logger { get; } = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+    private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasStorageJson>.GetLogger();
 
     public async Task<Result<List<Tenista>, TenistaError.StorageError>> ImportAsync(FileInfo file)
     {
-        Logger.Debug("Importando fichero JSON {file}", file.FullName);
+        _logger.Debug("Importando fichero JSON {file}", file.FullName);
         return await ReadLinesAsync(file);
     }
 
     public async Task<Result<int, TenistaError.StorageError>> ExportAsync(FileInfo file, List<Tenista> data)
     {
-        Logger.Debug("Exportando fichero JSON {file}", file.FullName);
+        _logger.Debug("Exportando fichero JSON {file}", file.FullName);
 
         return await file.EnsureFileCanExists()
             .Match(

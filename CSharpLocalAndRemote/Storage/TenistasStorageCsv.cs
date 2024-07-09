@@ -2,26 +2,25 @@
 using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.Error;
+using CSharpLocalAndRemote.Logger;
 using CSharpLocalAndRemote.Mapper;
 using CSharpLocalAndRemote.model;
-using Serilog;
-using Serilog.Core;
 
 namespace CSharpLocalAndRemote.Storage;
 
 public class TenistasStorageCsv : ITenistasStorage
 {
-    private Logger Logger { get; } = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+    private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasStorageCsv>.GetLogger();
 
     public async Task<Result<List<Tenista>, TenistaError.StorageError>> ImportAsync(FileInfo file)
     {
-        Logger.Debug("Importando fichero de csv {file}", file.FullName);
+        _logger.Debug("Importando fichero de csv {file}", file.FullName);
         return await ReadLinesAsync(file);
     }
 
     public async Task<Result<int, TenistaError.StorageError>> ExportAsync(FileInfo file, List<Tenista> data)
     {
-        Logger.Debug("Exportando fichero de csv {file}", file.FullName);
+        _logger.Debug("Exportando fichero de csv {file}", file.FullName);
 
         return await file.EnsureFileCanExists()
             .Match(
@@ -67,7 +66,7 @@ public class TenistasStorageCsv : ITenistasStorage
 
     private Tenista parseLine(string[] parts)
     {
-        Logger.Debug("Parseando línea {item}", parts);
+        _logger.Debug("Parseando línea {item}", parts);
         return new TenistaDto(
             long.Parse(parts[0]),
             parts[1],

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "fApX4/IYNJ/lAG1y2UfLRRDsiAylr67WJCqRRHyQ71wPlVX4puqC3mhjMonzQeCjut8pZBrOiCw6k3MbelY/yw==",
+  "dgSpecHash": "kpRR2DnXlPXS2wRuHAbphOnuGjWjYh6sdNb0yZpZ9n8kc6KeALn1Rg4c0j68hItaAgJ6cxd2l3bIl0g9a2TEDw==",
   "success": true,
   "projectFilePath": "C:\\Users\\joseluisgs\\Projects\\CSharpLocalAndRemote\\Tests\\Tests.csproj",
   "expectedPackageFiles": [
@@ -35,6 +35,7 @@
     "C:\\Users\\joseluisgs\\.nuget\\packages\\nunit.analyzers\\3.9.0\\nunit.analyzers.3.9.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\nunit3testadapter\\4.5.0\\nunit3testadapter.4.5.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\serilog\\4.0.0\\serilog.4.0.0.nupkg.sha512",
+    "C:\\Users\\joseluisgs\\.nuget\\packages\\serilog.expressions\\5.0.0\\serilog.expressions.5.0.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\serilog.sinks.console\\6.0.0\\serilog.sinks.console.6.0.0.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.6\\sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg.sha512",
     "C:\\Users\\joseluisgs\\.nuget\\packages\\sqlitepclraw.core\\2.1.6\\sqlitepclraw.core.2.1.6.nupkg.sha512",

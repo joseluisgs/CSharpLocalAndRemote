@@ -116,3 +116,15 @@ repository.GetAllAsync().Result.Match(
     },
     error => Console.WriteLine($"Error al obtener los tenistas: {error}")
 );
+
+tenistas.ForEach(async tenista => repository.SaveAsync(tenista));
+
+// Obtenemos todos los tenistas de la base de datos
+repository.GetAllAsync().Result.Match(
+    tenistas =>
+    {
+        Console.WriteLine($"Encontrados {tenistas.Count} tenistas en la base de datos:");
+        tenistas.ForEach(Console.WriteLine);
+    },
+    error => Console.WriteLine($"Error al obtener los tenistas: {error}")
+);

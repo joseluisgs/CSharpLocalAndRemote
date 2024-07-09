@@ -62,7 +62,10 @@ public class TenistasRepositoryLocal : ITenistasRepository
         Logger.Debug("Guardando el tenista local en bd");
         try
         {
-            var entityToSave = entity.ToTenistaEntity(); // Convertimos el tenista a entidad
+            var timeStamp = DateTime.Now.ToString("o"); // Obtenemos la fecha y hora actual
+            var entityToSave = entity.ToTenistaEntity();
+            entityToSave.CreatedAt = timeStamp; // Añadimos la fecha de creación
+            entityToSave.UpdatedAt = timeStamp; // Añadimos la fecha de actualización
             Db.Set<TenistaEntity>().Add(entityToSave); // Añadimos el tenista a la base de datos
             await Db.SaveChangesAsync(); // Guardamos los cambios
             return Result.Success<Tenista, TenistaError>(entityToSave.ToTenista());
@@ -79,13 +82,30 @@ public class TenistasRepositoryLocal : ITenistasRepository
         Logger.Debug("Actualizando el tenista local en bd con id {id}", id);
         try
         {
-            var entityToUpdate = entity.ToTenistaEntity(); // Convertimos el tenista a entidad
-            entityToUpdate.Id = id; // Actualizamos el id
-            Db.Set<TenistaEntity>().Update(entityToUpdate); // Actualizamos el tenista en la base de datos
-            var res = await Db.SaveChangesAsync(); // Guardamos los cambios
-            if (res == 0)
+            // La buscamos en la base de datos
+            var existingEntity = await Db.Set<TenistaEntity>().FindAsync(id);
+            if (existingEntity == null)
                 return Result.Failure<Tenista, TenistaError>(new TenistaError.DatabaseError(
-                    $"No se ha actualizado el tenista con id {id}"));
+                    $"El tenista con id {id} no se encontró en la base de datos."));
+
+            var timeStamp = DateTime.Now.ToString("o"); // Obtenemos la fecha y hora actual
+            var entityToUpdate = entity.ToTenistaEntity(); // Convertimos el tenista a entidad
+            // Actualizamos los campos de la entidad
+            existingEntity.Nombre = entityToUpdate.Nombre;
+            existingEntity.Pais = entityToUpdate.Pais;
+            existingEntity.Altura = entityToUpdate.Altura;
+            existingEntity.Peso = entityToUpdate.Peso;
+            existingEntity.Puntos = entityToUpdate.Puntos;
+            existingEntity.Mano = entityToUpdate.Mano;
+            existingEntity.FechaNacimiento = entityToUpdate.FechaNacimiento;
+            existingEntity.UpdatedAt = timeStamp; // Actualizamos la fecha de actualización
+
+            // Db.Set<TenistaEntity>().Update(entityToUpdate); // Actualizamos el tenista en la base de datos
+            // No usar el método Update por temas de conflictos de simultaneidad https://learn.microsoft.com/es-es/ef/core/saving/concurrency?tabs=data-annotations, prueba a ver quete pasa
+            await Db.SaveChangesAsync(); // Guardamos los cambios 
+            /*if (res == 0)
+                return Result.Failure<Tenista, TenistaError>(new TenistaError.DatabaseError(
+                    $"No se ha actualizado el tenista con id {id}"));*/
             return Result.Success<Tenista, TenistaError>(entityToUpdate.ToTenista());
         }
         catch (Exception ex)

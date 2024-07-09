@@ -70,10 +70,17 @@ repository.GetByIdAsync(-1).Result.Match(
     error => Console.WriteLine($"Error al obtener el tenista: {error}")
 );
 
-// Aactualizamos el tenista con id 1
+
+// Actualizamos el tenista con id 1
 var tenistaToUpdate = tenistas[0];
 tenistaToUpdate.Nombre = "Test Update";
-repository.SaveAsync(tenistaToUpdate).Result.Match(
+repository.UpdateAsync(1, tenistaToUpdate).Result.Match(
+    tenista => Console.WriteLine($"Tenista actualizado: {tenista}"),
+    error => Console.WriteLine($"Error al actualizar el tenista: {error}")
+);
+
+// Actualizamos un tenista que no existe
+repository.UpdateAsync(-1, tenistaToUpdate).Result.Match(
     tenista => Console.WriteLine($"Tenista actualizado: {tenista}"),
     error => Console.WriteLine($"Error al actualizar el tenista: {error}")
 );
@@ -87,7 +94,7 @@ repository.GetAllAsync().Result.Match(
     },
     error => Console.WriteLine($"Error al obtener los tenistas: {error}")
 );
-
+/*
 // Eliminamos el tenista con id 1
 repository.DeleteAsync(1).Result.Match(
     id => Console.WriteLine($"Tenista eliminado con id: {id}"),
@@ -109,3 +116,4 @@ repository.GetAllAsync().Result.Match(
     },
     error => Console.WriteLine($"Error al obtener los tenistas: {error}")
 );
+*/

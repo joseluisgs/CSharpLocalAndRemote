@@ -6,17 +6,17 @@ namespace CSharpLocalAndRemote.Rest;
 public interface ITenistasApiRest
 {
     [Get("/tenistas")]
-    Task<List<TenistaDto>> GetAll();
+    Task<List<TenistaDto>> GetAllAsync();
 
     [Get("/tenistas/{id}")]
-    Task<TenistaDto> GetById(long id);
+    Task<TenistaDto> GetByIdAsync(long id);
 
     [Post("/tenistas")]
-    Task<TenistaDto> Save([Body] TenistaDto tenista);
+    Task<TenistaDto> SaveAsync([Body] TenistaDto tenista);
 
     [Put("/tenistas/{id}")]
-    Task<TenistaDto> Update(long id, [Body] TenistaDto tenista);
+    Task<TenistaDto> UpdateAsync(long id, [Body] TenistaDto tenista);
 
     [Delete("/tenistas/{id}")]
-    Task Delete(long id);
+    Task DeleteAsync(long id);
 }

@@ -24,4 +24,12 @@ public abstract class TenistaError
             Message = "ERROR: " + message;
         }
     }
+
+    public class RemoteError : TenistaError
+    {
+        public RemoteError(string message)
+        {
+            Message = "ERROR: " + message;
+        }
+    }
 }

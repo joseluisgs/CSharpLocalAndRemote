@@ -82,7 +82,7 @@ public class TenistasRepositoryLocal : ITenistasRepository
         Logger.Debug("Actualizando el tenista local en bd con id {id}", id);
         try
         {
-            // La buscamos en la base de datos
+            // La buscamos en la base de datos, siempre hay que cargar el contexto antes de actualizar
             var existingEntity = await Db.Set<TenistaEntity>().FindAsync(id);
             if (existingEntity == null)
                 return Result.Failure<Tenista, TenistaError>(new TenistaError.DatabaseError(
@@ -118,14 +118,20 @@ public class TenistasRepositoryLocal : ITenistasRepository
     public async Task<Result<long, TenistaError>> DeleteAsync(long id)
     {
         Logger.Debug("Borrando el tenista local en bd con id {id}", id);
-        try // Intentamos borrar el tenista
+        try
         {
-            var entityToDelete = new TenistaEntity { Id = id }; // Creamos una entidad con el id
+            // Siempre debemos buscar el tenista antes de borrarlo, para cargar el contexto y realaciones
+            var entityToDelete = await Db.Set<TenistaEntity>().FindAsync(id); // Obtenemos el tenista por id
+            if (entityToDelete == null) // Si no se encuentra el tenista, retornamos un error
+                return Result.Failure<long, TenistaError>(new TenistaError.DatabaseError(
+                    $"El tenista con id {id} no encontró en la base de datos."));
+
             Db.Set<TenistaEntity>().Remove(entityToDelete); // Borramos el tenista de la base de datos
             var res = await Db.SaveChangesAsync(); // Guardamos los cambios
             if (res == 0) // Si no se ha borrado ningún tenista, retornamos un error
                 return Result.Failure<long, TenistaError>(new TenistaError.DatabaseError(
                     $"No se ha borrado el tenista con id {id}"));
+
             return Result.Success<long, TenistaError>(id); // Si se ha borrado, retornamos el id
         }
         catch (Exception ex) // Si hay un error, retornamos un error

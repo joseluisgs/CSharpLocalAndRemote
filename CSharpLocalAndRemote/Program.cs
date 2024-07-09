@@ -94,7 +94,7 @@ repository.GetAllAsync().Result.Match(
     },
     error => Console.WriteLine($"Error al obtener los tenistas: {error}")
 );
-/*
+
 // Eliminamos el tenista con id 1
 repository.DeleteAsync(1).Result.Match(
     id => Console.WriteLine($"Tenista eliminado con id: {id}"),
@@ -116,4 +116,3 @@ repository.GetAllAsync().Result.Match(
     },
     error => Console.WriteLine($"Error al obtener los tenistas: {error}")
 );
-*/

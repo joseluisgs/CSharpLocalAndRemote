@@ -92,6 +92,12 @@ Luego, crearemos una implementación de esta interfaz para almacenar los datos e
 Para facilitar la serialización y deserialización de los datos, utilizaremos la librería de
 Kotlin [Newtonsoft.Json (también conocida como Json.NET)](https://www.newtonsoft.com/json).
 
+Lo primero que debemos hacer es instalar la librería de Newtonsoft.Json.
+
+```bash
+dotnet add package Newtonsoft.Json
+```
+
 Haremos uso de mapeadores para convertir los datos de un formato a otro. Para ello haremos uso de las [funciones de
 extensión de C#](https://learn.microsoft.com/es-es/dotnet/csharp/programming-guide/classes-and-structs/extension-methods). Estas funciones nos permiten añadir nuevas
 funcionalidades a las clases sin modificarlas. En este
@@ -100,6 +106,15 @@ funciones de extensión para convertir los datos de un formato a otro.
 
 En todo momento trabajaremos la asincronía con [Task]https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task?view=net-8.0) y trabajaremos ROP con
 [Result](https://github.com/vkhorikov/CSharpFunctionalExtensions).
+
+Como logger hemos usado Serilog, que es un logger muy potente y sencillo de usar. Para instalarlo debemos hacerlo de la 
+siguiente forma:
+
+```bash
+dotnet add package Serilog
+dotnet add package Serilog.Sinks.Console
+dotnet add package Serilog.Extensions
+```
 
 Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/23b2b10da417b9ad80cec06bed4dea80dfc5fc2b).
@@ -142,6 +157,13 @@ A la hora de mappear las tablas, podemos hacer uso de [Data Annotations](https:/
 En nuestro caso hemos usado las dos variantes para mostrar ambas formas de mapear las tablas, una para unos casos y otra para otros.
 
 A su vez, gracias al uso de Entity Framework, podemos realizar operaciones asíncronas de forma sencilla y eficiente.
+
+En nuestro caso hemos instalado las dependencias necesarias para trabajar con SQLite.
+
+```bash
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.Sqlite
+```
 
 Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/fc76a44c7908b4c8d648dd149f8c59135649b024).

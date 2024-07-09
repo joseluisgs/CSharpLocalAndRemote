@@ -169,6 +169,29 @@ Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/fc76a44c7908b4c8d648dd149f8c59135649b024).
 
 
+## Repositorio Remoto
+
+Para la realización del repositorio remoto, hemos usado [Refit](https://reactiveui.github.io/refit/), una librería que
+nos
+permite realizar peticiones a
+una API REST de forma sencilla y eficiente. Además, le hemos añadido las opciones para parsear los datos con Newtonsoft.Json y el
+manejo asincronía con Task
+
+Para ello, hemos creado una interfaz para definir las operaciones de la API REST y una implementación de un repositorio
+donde
+usando Refit realizamos las peticiones a la API REST.
+
+Una de las ventajas de Refit es que nos permite definir las operaciones de la API REST.
+
+Para instalarlo debemos hacerlo de la siguiente forma:
+
+```bash
+dotnet add package Refit
+dotnet add package Refit.Newtonsoft.Json
+```
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/298eb8f7fe618df932b27544909539869084172b).
 
 
 

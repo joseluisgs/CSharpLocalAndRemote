@@ -16,7 +16,9 @@ public class TenistasRepositoryRemoteTest
     public void Setup()
     {
         _mockApi = new Mock<ITenistasApiRest>(); // Inicializamos el mock
-        _repository = new TenistasRepositoryRemote(_mockApi.Object); // Inicializamos el repositorio
+        _repository =
+            new TenistasRepositoryRemote(_mockApi
+                .Object); // Inicializamos el repositorio con el objeto que devuelve el mock
     }
 
     private Mock<ITenistasApiRest> _mockApi; // Mock de la interfaz ITenistasApiRest

@@ -193,7 +193,11 @@ dotnet add package Refit.Newtonsoft.Json
 Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/298eb8f7fe618df932b27544909539869084172b).
 
+Para la realización del validador de datos, hemos usado métodos de extensión de C# que nos permite validar los
+datos de forma sencilla y eficiente.
 
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/850a43b577bbe95d7d08e5b84e0a51887a22996a).
 
 
 

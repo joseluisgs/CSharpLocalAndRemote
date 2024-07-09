@@ -150,3 +150,8 @@ C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\runtime
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\Serilog.Expressions.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\Castle.Core.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\Moq.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\System.Diagnostics.EventLog.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Diagnostics.EventLog.Messages.dll
+C:\Users\joseluisgs\Projects\CSharpLocalAndRemote\Tests\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Diagnostics.EventLog.dll

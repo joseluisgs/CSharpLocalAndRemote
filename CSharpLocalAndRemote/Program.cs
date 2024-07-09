@@ -3,7 +3,6 @@
 using System.Text;
 using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Database;
-using CSharpLocalAndRemote.Mapper;
 using CSharpLocalAndRemote.Repository;
 using CSharpLocalAndRemote.Storage;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +23,10 @@ Console.WriteLine($"Tenistas importados: {tenistas.Count}");
 // y le pasamos el contexto de la base de datos, que es el encargado de la conexión con la base de datos
 // que a su vez necesita las opciones de configuración de la base de datos
 var manager = new EntityManager<TenistaEntity>(
-    new TenistasDbContext(new DbContextOptionsBuilder<DbContext>()
-        .UseSqlite("Data Source=tenistas.db")
-        .Options
+    new TenistasDbContext(
+        new DbContextOptionsBuilder<TenistasDbContext>()
+            .UseSqlite("Data Source=tenistas.db")
+            .Options
     )
 );
 

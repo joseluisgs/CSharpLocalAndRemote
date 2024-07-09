@@ -5,11 +5,12 @@ namespace CSharpLocalAndRemote.Database;
 // El DbContext es la clase que se encarga de la conexión con la base de datos.
 public class TenistasDbContext : DbContext
 {
-    public TenistasDbContext(DbContextOptions<DbContext> options) : base(options)
+    public TenistasDbContext(DbContextOptions<TenistasDbContext> options) : base(options)
     {
     }
 
-    public DbSet<TenistaEntity> Tenistas { get; set; } // DbSet es una colección de entidades de tipo TenistaEntity
+    public virtual DbSet<TenistaEntity>
+        Tenistas { get; set; } // DbSet es una colección de entidades de tipo TenistaEntity
 
     // En el método OnModelCreating se definen las relaciones entre las entidades y las tablas de la base de datos.
     // Tambien se puede hacer por medio de DataAnnotations en las entidades.

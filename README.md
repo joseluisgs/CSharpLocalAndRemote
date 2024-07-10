@@ -60,6 +60,11 @@ y [IAsyncEnumerable y Linq](https://learn.microsoft.com/es-es/shows/on-net/suppo
 Con Async/Await se pueden realizar tareas en segundo plano de forma sencilla y eficiente. Con IAsyncEnumerable y Linq se
 pueden realizar operaciones asíncronas de forma sencilla y eficiente.
 
+A lo largo del proyecto también usaremos [RxNet](https://reactivex.io/), que es una librería que nos permite trabajar con
+programación reactiva de forma sencilla y eficiente. Sobre todo en las notificaciones.
+
+¿Podríamos pensar cuál es mejor para este proyecto?
+
 ## Railway Oriented Programming
 
 El [Railway Oriented Programming](https://fsharpforfunandprofit.com/rop/) (ROP) es un estilo de programación que se basa
@@ -217,6 +222,14 @@ Luego definiremos `BehaviorSubject` que nos permitirá almacenar el último valo
 Por muchos observadores que tengamos, todos recibirán la última notificación. Usamos skip para no recibir el primer valor, pues es nulo.
 
 Posteriormente, devolvemos el observable para que los observadores se suscriban a él.
+
+`BehaviorSubject` almacena el último valor emitido y lo retransmite a cualquier nuevo observador que se suscriba. 
+Esto convierte a BehaviorSubject en un tipo de observable "caliente" (hot observable). 
+Todos los observadores obtenidos recibirán inmediatamente el último valor emitido, independientemente de cuándo se suscriban. 
+Además, el observable sigue emitiendo valores incluso cuando no hay ningún observador suscrito.
+
+No tiene nada que ver con `Observer.create`, que es un observable "frío" (cold observable) que emite valores solo cuando hay un observador suscrito y
+emite los valores desde el principio.
 
 Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/e82b41a78982661a0153ef65336cb38a8bf48202).

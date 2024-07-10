@@ -66,7 +66,6 @@ public class TenistasRepositoryRemote : ITenistasRepository
             };
 
             var tenista = (await _api.SaveAsync(entityToSave)).ToTenista();
-
             return Result.Success<Tenista, TenistaError>(tenista);
         }
         catch (Exception ex)
@@ -90,7 +89,6 @@ public class TenistasRepositoryRemote : ITenistasRepository
             };
 
             var tenista = (await _api.UpdateAsync(id, entityToUpdate)).ToTenista();
-
             return Result.Success<Tenista, TenistaError>(tenista);
         }
         catch (Exception ex)

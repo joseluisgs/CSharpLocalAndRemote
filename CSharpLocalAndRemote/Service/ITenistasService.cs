@@ -8,19 +8,19 @@ public interface ITenistasService
 {
     const long RefreshTime = 50000;
 
-    Task<Result<List<Tenista>, TenistaError>> GetAll(bool fromRemote);
+    Task<Result<List<Tenista>, TenistaError>> GetAllAsync(bool fromRemote);
 
-    Task<Result<Tenista, TenistaError>> GetById(long id);
+    Task<Result<Tenista, TenistaError>> GetByIdAsync(long id);
 
-    Task<Result<Tenista, TenistaError>> Save(Tenista tenista);
+    Task<Result<Tenista, TenistaError>> SaveAsync(Tenista tenista);
 
-    Task<Result<Tenista, TenistaError>> Update(long id, Tenista tenista);
+    Task<Result<Tenista, TenistaError>> UpdateAsync(long id, Tenista tenista);
 
-    Task<Result<long, TenistaError>> Delete(long id);
+    Task<Result<long, TenistaError>> DeleteAsync(long id);
 
-    Task<Result<int, TenistaError>> ImportData(FileInfo file);
+    Task<Result<int, TenistaError>> ImportDataAsync(FileInfo file);
 
-    Task<Result<int, TenistaError>> ExportData(FileInfo file, bool fromRemote);
+    Task<Result<int, TenistaError>> ExportDataAsync(FileInfo file, bool fromRemote);
 
     void EnableAutoRefresh();
 

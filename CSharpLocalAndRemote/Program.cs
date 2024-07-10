@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Text;
+using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Cache;
 using CSharpLocalAndRemote.Database;
 using CSharpLocalAndRemote.Notification;
@@ -66,6 +67,129 @@ Console.WriteLine("🔄 Refrescamos los tenistas 🔄");
 tenistasService.EnableAutoRefresh();
 
 await Task.Delay(2000);
+
+// Obtenemos todos los tenistas
+var tenistas = tenistasService.GetAllAsync(false).Result.Match(
+    tenistas =>
+    {
+        Console.WriteLine($"Encontrados {tenistas.Count} tenistas:");
+        Console.WriteLine(string.Join("\n", tenistas));
+        return tenistas;
+    },
+    error =>
+    {
+        Console.WriteLine($"Error al obtener los tenistas: {error}");
+        return [];
+    }
+);
+
+// Obtenemos un tenista que existe
+tenistasService.GetByIdAsync(1).Result.Match(
+    tenista => Console.WriteLine($"Tenista encontrado: {tenista}"),
+    error => Console.WriteLine(error)
+);
+
+// Obtenemos el mismo tenista que tiene que estar en la cache
+tenistasService.GetByIdAsync(1).Result.Match(
+    tenista => Console.WriteLine($"Tenista encontrado: {tenista}"),
+    error => Console.WriteLine(error)
+);
+
+// Obtenemos un tenista que no existe
+tenistasService.GetByIdAsync(-1).Result.Match(
+    tenista => Console.WriteLine($"Tenista encontrado: {tenista}"),
+    error => Console.WriteLine(error)
+);
+
+// Guardamos un tenista
+var tenista = tenistas[0];
+tenista.Nombre = "Test save";
+tenista.Pais = "KAKA";
+tenistasService.SaveAsync(tenista).Result.Match(
+    tenista => Console.WriteLine($"Tenista guardado: {tenista}"),
+    error => Console.WriteLine(error)
+);
+
+
+// Guardamos un tenista con error de validación
+var tenistaError = tenistas[0];
+tenistaError.Nombre = "";
+tenistasService.SaveAsync(tenistaError).Result.Match(
+    tenista => Console.WriteLine($"Tenista guardado: {tenista}"),
+    error => Console.WriteLine(error)
+);
+
+// obtenemos todos los tenistas
+tenistas = tenistasService.GetAllAsync(false).Result.Match(
+    tenistas =>
+    {
+        Console.WriteLine($"Encontrados {tenistas.Count} tenistas:");
+        Console.WriteLine(string.Join("\n", tenistas));
+        return tenistas;
+    },
+    error =>
+    {
+        Console.WriteLine($"Error al obtener los tenistas: {error}");
+        return [];
+    }
+);
+
+// Actualizamos un tenista
+var tenistaToUpdate = tenistas[0];
+tenistaToUpdate.Nombre = "Test Update";
+tenistaToUpdate.Pais = "KAKA";
+tenistasService.UpdateAsync(1, tenistaToUpdate).Result.Match(
+    tenista => Console.WriteLine($"Tenista actualizado: {tenista}"),
+    error => Console.WriteLine(error)
+);
+
+// Actualizamos un tenista que no existe
+tenistasService.UpdateAsync(-1, tenistaToUpdate).Result.Match(
+    tenista => Console.WriteLine($"Tenista actualizado: {tenista}"),
+    error => Console.WriteLine(error)
+);
+
+// Obtenemos todos los tenistas
+tenistas = tenistasService.GetAllAsync(false).Result.Match(
+    tenistas =>
+    {
+        Console.WriteLine($"Encontrados {tenistas.Count} tenistas:");
+        Console.WriteLine(string.Join("\n", tenistas));
+        return tenistas;
+    },
+    error =>
+    {
+        Console.WriteLine($"Error al obtener los tenistas: {error}");
+        return [];
+    }
+);
+
+// Eliminamos un tenista
+tenistasService.DeleteAsync(1).Result.Match(
+    id => Console.WriteLine($"Tenista eliminado con id: {id}"),
+    error => Console.WriteLine(error)
+);
+
+// Eliminamos un tenista que no existe
+tenistasService.DeleteAsync(-1).Result.Match(
+    id => Console.WriteLine($"Tenista eliminado con id: {id}"),
+    error => Console.WriteLine(error)
+);
+
+// Obtenemos todos los tenistas
+tenistas = tenistasService.GetAllAsync(false).Result.Match(
+    tenistas =>
+    {
+        Console.WriteLine($"Encontrados {tenistas.Count} tenistas:");
+        Console.WriteLine(string.Join("\n", tenistas));
+        return tenistas;
+    },
+    error =>
+    {
+        Console.WriteLine($"Error al obtener los tenistas: {error}");
+        return [];
+    }
+);
 
 
 Console.WriteLine("🔇 Desactivamos la escucha de notificaciones de tenistas 🔇");

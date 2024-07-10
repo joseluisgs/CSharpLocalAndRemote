@@ -3,10 +3,12 @@ using CSharpLocalAndRemote.Cache;
 using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.Error;
 using CSharpLocalAndRemote.Logger;
+using CSharpLocalAndRemote.Mapper;
 using CSharpLocalAndRemote.model;
 using CSharpLocalAndRemote.Notification;
 using CSharpLocalAndRemote.Repository;
 using CSharpLocalAndRemote.Storage;
+using CSharpLocalAndRemote.Validator;
 
 namespace CSharpLocalAndRemote.Service;
 
@@ -43,47 +45,101 @@ public class TenistasService : ITenistasService
     public IObservable<Notification<TenistaDto>?> Notifications => _notificationsService.Notifications;
 
 
-    public async Task<Result<List<Tenista>, TenistaError>> GetAll(bool fromRemote)
+    public async Task<Result<List<Tenista>, TenistaError>> GetAllAsync(bool fromRemote)
     {
         _logger.Debug("Obteniendo todos los tenistas");
         if (!fromRemote) return await _localRepository.GetAllAsync();
 
         return await _remoteRepository.GetAllAsync()
             .Check(async _ => await _localRepository.RemoveAllAsync())
-            .Tap(async remoteTenistas =>
+            .Check(async remoteTenistas => await _localRepository.SaveAllAsync(remoteTenistas))
+            .Check(_ => _localRepository.GetAllAsync())
+            .Tap(_ => _cache.Clear());
+    }
+
+    public async Task<Result<Tenista, TenistaError>> GetByIdAsync(long id)
+    {
+        _logger.Debug("Obteniendo tenista por id: " + id);
+
+        // Buscar en la caché
+        var cachedTenista = _cache.Get(id);
+        if (cachedTenista is not null)
+            // Si se encuentra en la caché, devolver el resultado exitoso
+            return Result.Success<Tenista, TenistaError>(cachedTenista);
+
+        // Buscar en el repositorio local y mete en cache y si no se encuentra, buscar en el repositorio remoto
+        // Si quieres puedes escribirlo con if - else - if - else
+        return await _localRepository.GetByIdAsync(id)
+            .Tap(localTenista => _cache.Put(id, localTenista))
+            .OnFailureCompensate(async () =>
             {
-                await _localRepository.SaveAllAsync(remoteTenistas);
-                _cache.Clear();
-            })
-            .Bind(_ => _localRepository.GetAllAsync());
+                return await _remoteRepository.GetByIdAsync(id)
+                    .Check(async tenistaRemote => await _localRepository.SaveAsync(tenistaRemote))
+                    .Tap(localTenista => _cache.Put(id, localTenista));
+            });
     }
 
-    public Task<Result<Tenista, TenistaError>> GetById(long id)
+    public async Task<Result<Tenista, TenistaError>> SaveAsync(Tenista tenista)
+    {
+        _logger.Debug("Guardando tenista: " + tenista);
+        // Validamos el tenista antes de guardarlo remetoto
+        var validationResult = tenista.Validate();
+        if (validationResult.IsFailure)
+            return Result.Failure<Tenista, TenistaError>(validationResult.Error);
+
+        // Guardamos el tenista en el repositorio remoto, local cache y lanzamos notificación
+        return await _remoteRepository.SaveAsync(tenista)
+            .Check(async tenistaRemoted => await _localRepository.SaveAsync(tenistaRemoted))
+            .Tap(tenistaSaved => _cache.Put(tenistaSaved.Id, tenistaSaved))
+            .Tap(tenistaSaved => _notificationsService.Send(
+                new Notification<TenistaDto>(NotificationType.Created, tenistaSaved.ToTenistaDto(),
+                    "Tenista guardado con id: " + tenistaSaved.Id,
+                    DateTime.Now)
+            ));
+    }
+
+    public async Task<Result<Tenista, TenistaError>> UpdateAsync(long id, Tenista tenista)
+    {
+        _logger.Debug("Actualizando tenista con id: " + id);
+
+        // Validamos el tenista antes de actualizarlo
+        var validationResult = tenista.Validate();
+        if (validationResult.IsFailure)
+            return Result.Failure<Tenista, TenistaError>(validationResult.Error);
+
+        // Si existe actualizamos en remoto, local y cache
+        return await GetByIdAsync(id)
+            .Check(async _ => await _remoteRepository.UpdateAsync(id, tenista))
+            .Check(async _ => await _localRepository.UpdateAsync(id, tenista))
+            .Tap(data => _notificationsService.Send(
+                new Notification<TenistaDto>(NotificationType.Updated, tenista.ToTenistaDto(),
+                    "Tenista actualizado con id: " + tenista.Id,
+                    DateTime.Now)
+            ));
+    }
+
+    public async Task<Result<long, TenistaError>> DeleteAsync(long id)
+    {
+        _logger.Debug("Eliminando tenista con id: " + id);
+
+        return await GetByIdAsync(id)
+            .Check(async _ => await _remoteRepository.DeleteAsync(id))
+            .Check(async _ => await _localRepository.DeleteAsync(id))
+            .Tap(_ => _cache.Remove(id))
+            .Tap(_ => _notificationsService.Send(
+                new Notification<TenistaDto>(NotificationType.Deleted, null,
+                    "Tenista eliminado con id: " + id,
+                    DateTime.Now)
+            ))
+            .Map(_ => id);
+    }
+
+    public Task<Result<int, TenistaError>> ImportDataAsync(FileInfo file)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Result<Tenista, TenistaError>> Save(Tenista tenista)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result<Tenista, TenistaError>> Update(long id, Tenista tenista)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result<long, TenistaError>> Delete(long id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result<int, TenistaError>> ImportData(FileInfo file)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result<int, TenistaError>> ExportData(FileInfo file, bool fromRemote)
+    public Task<Result<int, TenistaError>> ExportDataAsync(FileInfo file, bool fromRemote)
     {
         throw new NotImplementedException();
     }
@@ -133,13 +189,10 @@ public class TenistasService : ITenistasService
     public async void LoadData()
     {
         _logger.Debug("Cargando datos");
-        await _localRepository.RemoveAllAsync();
         await _remoteRepository.GetAllAsync()
-            .Tap(async remoteTenistas =>
-            {
-                await _localRepository.SaveAllAsync(remoteTenistas);
-                _cache.Clear();
-            })
+            .Check(async _ => await _localRepository.RemoveAllAsync())
+            .Check(async remoteTenistas => await _localRepository.SaveAllAsync(remoteTenistas))
+            .Tap(_ => _cache.Clear())
             .Tap(data => _notificationsService.Send(
                     new Notification<TenistaDto>(NotificationType.Refresh, null,
                         "Nuevos datos cargados " + data.Count,

@@ -202,14 +202,24 @@ los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/t
 
 ## Notificaciones
 
-Para la realización del servicio de notificaciones, hemos hecho uso de dos clases de la familia de los [Canales](https://learn.microsoft.com/es-es/dotnet/core/extensions/channels) de C#.
+Para la realización del servicio de notificaciones, hemos hecho uso de la librería Rx.NET, que nos permite trabajar con
+programación reactiva de forma sencilla y eficiente.
 
-Un canal es una estructura de datos que permite la comunicación entre dos hilos de forma sencilla y eficiente.
+Para ello usaremos el patrón Observer, que nos permite notificar a los observadores de los cambios realizados.
 
-Para ello hemos creado un canal limitado a un elemento y que siempre se elimine al último
+Lo primero es usar la librería de Rx.NET.
+
+```bash
+dotnet add package System.Reactive
+```
+
+Luego definiremos `BehaviorSubject` que nos permitirá almacenar el último valor emitido y notificar a los observadores. 
+Por muchos observadores que tengamos, todos recibirán la última notificación. Usamos skip para no recibir el primer valor, pues es nulo.
+
+Posteriormente, devolvemos el observable para que los observadores se suscriban a él.
 
 Enlace a
-los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/043651f30ede6b11333e466ebd45d49bfbdc80c8).
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/e82b41a78982661a0153ef65336cb38a8bf48202).
 
 
 ## Test

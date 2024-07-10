@@ -200,6 +200,17 @@ Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/850a43b577bbe95d7d08e5b84e0a51887a22996a).
 
 
+## Notificaciones
+
+Para la realización del servicio de notificaciones, hemos hecho uso de dos clases de la familia de los [Canales](https://learn.microsoft.com/es-es/dotnet/core/extensions/channels) de C#.
+
+Un canal es una estructura de datos que permite la comunicación entre dos hilos de forma sencilla y eficiente.
+
+Para ello hemos creado un canal limitado a un elemento y que siempre se elimine al último
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/043651f30ede6b11333e466ebd45d49bfbdc80c8).
+
 
 ## Test
 

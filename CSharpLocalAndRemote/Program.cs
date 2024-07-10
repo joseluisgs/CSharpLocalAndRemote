@@ -16,16 +16,11 @@ Console.WriteLine("🎾🎾 Hola Tenistas! 🎾🎾");
 
 // Cramos las notificaciones
 var notifications = new TenistasNotifications();
+Console.WriteLine("Notificaciones creadas");
 
-// Suscribirse al canal (opcional, se puede hacer en otro lugar)
-
-// Crear y iniciar una tarea para la recepción de notificaciones
-var receiveTask = Task.Run(async () =>
-{
-    while (await notifications.Notifications.WaitToReadAsync(notifications.CancellationToken))
-        if (notifications.Notifications.TryRead(out var notification))
-            Console.WriteLine($"🚀Recibida notificación: {notification}");
-});
+// Suscribirse y observar
+notifications.Notifications
+    .Subscribe(notification => { Console.WriteLine($"Recibida notificación: {notification}"); });
 
 await Task.Delay(1000); // Esperamos un segundo para que se suscriba
 
@@ -239,4 +234,3 @@ new TenistasStorageCsv().ExportAsync(new FileInfo("Data/tenistas_export.csv"), t
 
 Console.WriteLine("🎾🎾 Adiós Tenistas! 🎾🎾");
 notifications.Stop(); // Detener las notificaciones
-receiveTask.Wait(); // Esperar a que la tarea termine de manera segura

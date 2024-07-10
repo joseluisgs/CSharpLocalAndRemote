@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+﻿using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.Logger;
 
@@ -6,36 +7,35 @@ namespace CSharpLocalAndRemote.Notification;
 
 public class TenistasNotifications : INotifications<TenistaDto>
 {
-    // Para poder cancelar la suscripción a las notificaciones
-    private readonly CancellationTokenSource _cancellationTokenSource;
+    // Voy con la implementación de RxNet
     private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasNotifications>.GetLogger();
 
-    // Canal de notificaciones
-    private readonly Channel<Notification<TenistaDto>> _notificationsChannel;
+    // BehaviorSubject es un tipo de flujo como Mono de Project Reactor
+    // que mantiene un valor un solo valor. En este caso, mantiene una notificación
+    // Por muchos suscriptores que haya, siempre se les enviará el último valor
+    private readonly BehaviorSubject<Notification<TenistaDto>?> _notificationsSubject;
 
     public TenistasNotifications()
     {
-        // Creamos un canal de notificaciones con capacidad de 1 elemento y modo de eliminación de los más antiguos si se llena
-        var boundedOptions = new BoundedChannelOptions(1) { FullMode = BoundedChannelFullMode.DropOldest };
-
-        _notificationsChannel = Channel.CreateBounded<Notification<TenistaDto>>(boundedOptions); // Creamos el canal
-        _cancellationTokenSource = new CancellationTokenSource(); // Creamos el token de cancelación
+        _notificationsSubject = new BehaviorSubject<Notification<TenistaDto>?>(null); // Inicialmente null
     }
 
-    // Propiedad de solo lectura para obtener el canal de notificaciones
-    public ChannelReader<Notification<TenistaDto>> Notifications => _notificationsChannel.Reader;
-    public CancellationToken CancellationToken => _cancellationTokenSource.Token;
+    // Propiedad para obtener el flujo de notificaciones, pero solo las que no son null
+    public IObservable<Notification<TenistaDto>?> Notifications =>
+        _notificationsSubject.AsObservable()
+            .Skip(1); // Saltamos el primer null, tambien podemos usar Where(x => x != null)
 
-    public async Task Send(Notification<TenistaDto> notification)
+
+    public Task Send(Notification<TenistaDto> notification)
     {
         _logger.Debug("Enviando notificación: {Notification}", notification);
-        await _notificationsChannel.Writer.WriteAsync(notification);
+        _notificationsSubject.OnNext(notification);
+        return Task.CompletedTask;
     }
 
     public void Stop()
     {
         _logger.Debug("Deteniendo notificaciones...");
-        _notificationsChannel.Writer.Complete(); // Indicamos que no se van a escribir más notificaciones
-        _cancellationTokenSource.Cancel(); // Cancelamos la suscripción
+        _notificationsSubject.OnCompleted();
     }
 }

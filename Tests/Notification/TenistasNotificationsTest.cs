@@ -12,87 +12,63 @@ namespace Tests.Notification;
 public class TenistasNotificationsTest
 {
     [Test]
-    [DisplayName("EnviarNotificacion se hace cuando el canal no está lleno")]
-    public async Task EnviarNotificacion_CuandoElCanalNoEstaLleno()
-    {
-        // Arrange
-        var tenistaTest = new Tenista("Test1", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1)
-            .ToTenistaDto();
-
-        var notification = new Notification<TenistaDto>(NotificationType.Created, tenistaTest, "Test", DateTime.Now);
-
-        var tenistasNotifications = new TenistasNotifications();
-
-        // Act
-        await tenistasNotifications.Send(notification);
-        var result = await tenistasNotifications.Notifications.ReadAsync();
-
-        // Assert
-        Assert.Multiple(() =>
+        [DisplayName("Enviar notificación se hace cuando el canal no está lleno")]
+        public async Task EnviarNotificacion_CuandoElCanalNoEstaLleno()
         {
-            Assert.That(result, Is.EqualTo(notification), "La notificación enviada debe ser igual a la recibida.");
-            Assert.That(result.Type, Is.EqualTo(notification.Type), "El tipo de notificación debe ser igual.");
-            Assert.That(result.Message, Is.EqualTo(notification.Message),
-                "El mensaje de la notificación debe ser igual.");
-            Assert.That(result.Item, Is.EqualTo(notification.Item),
-                "El item de la notificación debe ser igual.");
-        });
-    }
+            // Arrange
+            var tenistaTest = new Tenista("Test1", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1)
+                .ToTenistaDto();
+            var notification = new Notification<TenistaDto>(NotificationType.Created, tenistaTest, "Test", DateTime.Now);
+            var tenistasNotifications = new TenistasNotifications();
 
-    [Test]
-    [DisplayName("EnviarNotificacion no se hace cuando el canal no está lleno")]
-    public async Task EnviarNotificacion_NoSeHaceCuandoElCanalEstaLleno()
-    {
-        // Arrange
-        var tenistaTest = new Tenista("Test1", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1);
+            Notification<TenistaDto> result = null;
 
-        var notification1 = new Notification<TenistaDto>(NotificationType.Created, tenistaTest.ToTenistaDto(), "Test1",
-            DateTime.Now);
-        var notification2 = new Notification<TenistaDto>(NotificationType.Created, tenistaTest.ToTenistaDto(), "Test2",
-            DateTime.Now);
+            // Act
+            var subscription = tenistasNotifications.Notifications.Subscribe(n => result = n);
+            await tenistasNotifications.Send(notification);
+            //await Task.Delay(500); // Pequeña espera para asegurar la recepción de la notificación
 
-        var tenistasNotifications = new TenistasNotifications();
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.EqualTo(notification), "La notificación enviada debe ser igual a la recibida.");
+                Assert.That(result.Type, Is.EqualTo(notification.Type), "El tipo de notificación debe ser igual.");
+                Assert.That(result.Message, Is.EqualTo(notification.Message), "El mensaje de la notificación debe ser igual.");
+                Assert.That(result.Item, Is.EqualTo(notification.Item), "El item de la notificación debe ser igual.");
+            });
 
-        // Act
-        await tenistasNotifications.Send(notification1);
-        await tenistasNotifications.Send(notification2);
+            subscription.Dispose();
+        }
 
-        var result1 = await tenistasNotifications.Notifications.ReadAsync();
-
-
-        // Assert
-        Assert.Multiple(() =>
+        [Test]
+        [DisplayName("Enviar notificación descarta la antigua y recibe la nueva")]
+        public async Task EnviarNotificacion_DescartaViejaYRecibeNueva()
         {
-            Assert.That(result1, Is.EqualTo(notification2),
-                "La notificación 2 enviada debe ser igual a la recibida.");
-            Assert.That(result1.Type, Is.EqualTo(notification2.Type), "El tipo de notificación debe ser igual.");
-            Assert.That(result1.Message, Is.EqualTo(notification2.Message),
-                "El mensaje de la notificación debe ser igual.");
-            Assert.That(result1.Item, Is.EqualTo(notification2.Item), "El item de la notificación debe ser igual.");
-        });
-    }
+            // Arrange
+            var tenistaTest = new Tenista("Test1", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1);
 
-    [Test]
-    [DisplayName("CancelarSuscripcion detiene las notificaciones")]
-    public void CancelarSuscripcion_DetenerNotificaciones()
-    {
-        // Arrange
-        var tenistaTest = new Tenista("Test1", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1)
-            .ToTenistaDto();
-        var tenistasNotifications = new TenistasNotifications();
+            var notification1 = new Notification<TenistaDto>(NotificationType.Created, tenistaTest.ToTenistaDto(), "Test1", DateTime.Now);
+            var notification2 = new Notification<TenistaDto>(NotificationType.Created, tenistaTest.ToTenistaDto(), "Test2", DateTime.Now);
 
-        // Act
-        tenistasNotifications.Stop();
+            var tenistasNotifications = new TenistasNotifications();
 
-        // Assert
-        Assert.Multiple(() =>
-        {
-            Assert.ThrowsAsync<ChannelClosedException>(
-                async () => await tenistasNotifications.Send(
-                    new Notification<TenistaDto>(NotificationType.Created, tenistaTest, "Test", DateTime.Now)),
-                "Debería lanzarse una excepción al intentar enviar a un canal cerrado.");
-            Assert.IsTrue(tenistasNotifications.CancellationToken.IsCancellationRequested,
-                "El token de cancelación debería estar establecido.");
-        });
-    }
+            Notification<TenistaDto> result = null;
+
+            // Act
+            var subscription = tenistasNotifications.Notifications.Subscribe(n => result = n);
+            await tenistasNotifications.Send(notification1);
+            await tenistasNotifications.Send(notification2);
+            //await Task.Delay(500); // Pequeña espera para asegurar la recepción de la notificación
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.EqualTo(notification2), "La notificación 2 enviada debe ser igual a la recibida.");
+                Assert.That(result.Type, Is.EqualTo(notification2.Type), "El tipo de notificación debe ser igual.");
+                Assert.That(result.Message, Is.EqualTo(notification2.Message), "El mensaje de la notificación debe ser igual.");
+                Assert.That(result.Item, Is.EqualTo(notification2.Item), "El item de la notificación debe ser igual.");
+            });
+
+            subscription.Dispose();
+        }
 }

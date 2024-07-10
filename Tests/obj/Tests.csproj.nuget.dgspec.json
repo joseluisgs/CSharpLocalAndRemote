@@ -73,6 +73,14 @@
             "Serilog.Sinks.Console": {
               "target": "Package",
               "version": "[6.0.0, )"
+            },
+            "System.Reactive": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "System.Reactive.Linq": {
+              "target": "Package",
+              "version": "[6.0.1, )"
             }
           },
           "imports": [

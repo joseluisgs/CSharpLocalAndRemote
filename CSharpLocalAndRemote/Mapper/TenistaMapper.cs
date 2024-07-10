@@ -48,7 +48,7 @@ public static class TenistaMapper
             tenista.Altura,
             tenista.Peso,
             tenista.Puntos,
-            tenista.Mano.ToString(),
+            tenista.Mano.ToString().ToUpper(),
             tenista.FechaNacimiento
                 .ToString("yyyy-MM-dd"), // Se utiliza ToString con el formato correcto ISO
             tenista.CreatedAt.ToString("o"), // Se utiliza ToString con el formato correcto ISO
@@ -86,7 +86,7 @@ public static class TenistaMapper
             Altura = tenista.Altura,
             Peso = tenista.Peso,
             Puntos = tenista.Puntos,
-            Mano = tenista.Mano.ToString(),
+            Mano = tenista.Mano.ToString().ToUpper(),
             FechaNacimiento = tenista.FechaNacimiento.ToString("yyyy-MM-dd"),
             CreatedAt = tenista.CreatedAt.ToString("o"),
             UpdatedAt = tenista.UpdatedAt.ToString("o"),

@@ -15,7 +15,7 @@ public class TenistaMapperTest
         185,
         85,
         10250,
-        Mano.DIESTRO,
+        Mano.Diestro,
         new DateTime(1986, 6, 3),
         id: 1,
         isDeleted: false
@@ -28,7 +28,7 @@ public class TenistaMapperTest
         185,
         85,
         10250,
-        "DIESTRO",
+        "Diestro",
         "1986-06-03",
         IsDeleted: false
     );
@@ -66,7 +66,7 @@ public class TenistaMapperTest
             Assert.That(testDto.Altura, Is.EqualTo(tenistaDto.Altura), "Altura deben ser iguales");
             Assert.That(testDto.Peso, Is.EqualTo(tenistaDto.Peso), "Peso deben ser iguales");
             Assert.That(testDto.Puntos, Is.EqualTo(tenistaDto.Puntos), "Puntos deben ser iguales");
-            Assert.That(testDto.Mano, Is.EqualTo(tenistaDto.Mano), "Mano deben ser iguales");
+            Assert.That(testDto.Mano, Is.EqualTo(tenistaDto.Mano.ToUpper()), "Mano deben ser iguales");
             Assert.That(testDto.FechaNacimiento, Is.EqualTo(tenistaDto.FechaNacimiento),
                 "FechaNacimiento deben ser iguales");
             Assert.That(testDto.IsDeleted, Is.EqualTo(tenistaDto.IsDeleted), "IsDeleted deben ser iguales");

@@ -16,7 +16,7 @@ public class CacheGenericTest
             altura: 180,
             peso: 75,
             puntos: 1000,
-            mano: Mano.DIESTRO,
+            mano: Mano.Diestro,
             fechaNacimiento: new DateTime(1990, 1, 1)
         );
     }

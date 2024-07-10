@@ -1,7 +1,5 @@
 ﻿namespace CSharpLocalAndRemote.model;
 
-using System;
-
 public class Tenista
 {
     public const long NewId = 0L;
@@ -17,9 +15,9 @@ public class Tenista
         DateTime fechaNacimiento,
         DateTime? createdAt = null, // ? -> Nullable 
         DateTime? updatedAt = null,
-        bool isDeleted = false, 
+        bool isDeleted = false,
         long id = NewId
-        )
+    )
     {
         Id = id;
         Nombre = nombre;
@@ -48,12 +46,13 @@ public class Tenista
 
     public override string ToString()
     {
-        return $"Tenista(Id: {Id}, Nombre: {Nombre}, Pais: {Pais}, Altura: {Altura}, Peso: {Peso}, Puntos: {Puntos}, Mano: {Mano}, Fecha Nacimiento: {FechaNacimiento.ToString("yyyy-MM-dd")}, Created At: {CreatedAt.ToString("o")}, Updated At: {UpdatedAt.ToString("o")}, Is Deleted: {IsDeleted})";
+        return
+            $"Tenista(Id: {Id}, Nombre: {Nombre}, Pais: {Pais}, Altura: {Altura}, Peso: {Peso}, Puntos: {Puntos}, Mano: {Mano}, Fecha Nacimiento: {FechaNacimiento.ToString("yyyy-MM-dd")}, Created At: {CreatedAt.ToString("o")}, Updated At: {UpdatedAt.ToString("o")}, Is Deleted: {IsDeleted})";
     }
 }
 
 public enum Mano
 {
-    DIESTRO,
-    ZURDO
+    Diestro,
+    Zurdo
 }

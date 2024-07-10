@@ -26,7 +26,7 @@ public class TenistasRepositoryRemoteTest
 
     private readonly List<Tenista> tenistas =
     [
-        new Tenista("Test1", "USA", 185, 85, 2000, Mano.DIESTRO, new DateTime(1981, 8, 8), id: 100)
+        new Tenista("Test1", "USA", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 100)
     ];
 
     private readonly List<TenistaDto> tenistaDtos = new()

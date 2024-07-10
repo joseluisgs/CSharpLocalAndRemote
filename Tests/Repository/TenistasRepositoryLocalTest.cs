@@ -39,9 +39,9 @@ public class TenistasRepositoryLocalTest
         // Datos que se insertarán en la base de datos en memoria
         var tenistas = new List<Tenista>
         {
-            new("Test1", "Suiza", 185, 85, 2000, Mano.DIESTRO, new DateTime(1981, 8, 8), id: 1),
-            new("Test2", "Serbia", 188, 77, 1500, Mano.DIESTRO, new DateTime(1987, 5, 22), id: 2),
-            new("Test3", "Inglaterra", 188, 76, 1500, Mano.DIESTRO, new DateTime(1987, 12, 12), id: 3)
+            new("Test1", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1),
+            new("Test2", "Serbia", 188, 77, 1500, Mano.Diestro, new DateTime(1987, 5, 22), id: 2),
+            new("Test3", "Inglaterra", 188, 76, 1500, Mano.Diestro, new DateTime(1987, 12, 12), id: 3)
         }.Select(tenista => tenista.ToTenistaEntity()).ToList();
 
         // Insertar los tenistas en la base de datos en memoria
@@ -115,7 +115,7 @@ public class TenistasRepositoryLocalTest
     public async Task CreateAsync_DevuelveElTenistaCreado()
     {
         // Arrange
-        var tenista = new Tenista("Test4", "España", 190, 80, 1500, Mano.DIESTRO, new DateTime(1987, 12, 12), id: 4);
+        var tenista = new Tenista("Test4", "España", 190, 80, 1500, Mano.Diestro, new DateTime(1987, 12, 12), id: 4);
 
         // Act
         var result = await _repository.SaveAsync(tenista);
@@ -134,7 +134,7 @@ public class TenistasRepositoryLocalTest
     {
         // Arrange
         var tenistaToUpdate =
-            new Tenista("TestUpdate", "España", 191, 78, 1500, Mano.DIESTRO, new DateTime(1987, 5, 22), id: 2);
+            new Tenista("TestUpdate", "España", 191, 78, 1500, Mano.Diestro, new DateTime(1987, 5, 22), id: 2);
 
         // Act
         var result = await _repository.UpdateAsync(2, tenistaToUpdate);
@@ -155,7 +155,7 @@ public class TenistasRepositoryLocalTest
     {
         // Arrange
         var tenistaToUpdate =
-            new Tenista("TestUpdate", "España", 191, 78, 1500, Mano.DIESTRO, new DateTime(1987, 5, 22), id: 4);
+            new Tenista("TestUpdate", "España", 191, 78, 1500, Mano.Diestro, new DateTime(1987, 5, 22), id: 4);
 
         // Act
         var result = await _repository.UpdateAsync(5, tenistaToUpdate);

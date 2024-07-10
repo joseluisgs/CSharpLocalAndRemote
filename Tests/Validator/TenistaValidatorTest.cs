@@ -12,7 +12,7 @@ public class TenistaValidatorTest
     public void Validar_TenistaConNombreVacio_DevuelveErrorDeValidacion()
     {
         // Arrange
-        var tenista = new Tenista("", "Suiza", 185, 85, 2000, Mano.DIESTRO, new DateTime(1981, 8, 8), id: 1);
+        var tenista = new Tenista("", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1);
 
         // Act
         var resultado = tenista.Validate();
@@ -31,7 +31,7 @@ public class TenistaValidatorTest
     public void Validar_TenistaConAlturaMenorOIgualACero_DevuelveErrorDeValidacion()
     {
         // Arrange
-        var tenista = new Tenista("Juan", "España", 0, 75, 1000, Mano.DIESTRO, new DateTime(1990, 5, 22), id: 2);
+        var tenista = new Tenista("Juan", "España", 0, 75, 1000, Mano.Diestro, new DateTime(1990, 5, 22), id: 2);
 
         // Act
         var resultado = tenista.Validate();
@@ -50,7 +50,7 @@ public class TenistaValidatorTest
     public void Validar_TenistaConPesoMenorACero_DevuelveErrorDeValidacion()
     {
         // Arrange
-        var tenista = new Tenista("Juan", "España", 180, 0, 1000, Mano.DIESTRO, new DateTime(1990, 5, 22), id: 3);
+        var tenista = new Tenista("Juan", "España", 180, 0, 1000, Mano.Diestro, new DateTime(1990, 5, 22), id: 3);
 
         // Act
         var resultado = tenista.Validate();
@@ -69,7 +69,7 @@ public class TenistaValidatorTest
     public void Validar_TenistaConPuntosMenorACero_DevuelveErrorDeValidacion()
     {
         // Arrange
-        var tenista = new Tenista("Juan", "España", 180, 75, -1, Mano.DIESTRO, new DateTime(1990, 5, 2), id: 4);
+        var tenista = new Tenista("Juan", "España", 180, 75, -1, Mano.Diestro, new DateTime(1990, 5, 2), id: 4);
 
         // Act
         var resultado = tenista.Validate();
@@ -88,7 +88,7 @@ public class TenistaValidatorTest
     public void Validar_TenistaConFechaNacimientoFutura_DevuelveErrorDeValidacion()
     {
         // Arrange
-        var tenista = new Tenista("Juan", "España", 180, 75, 1000, Mano.DIESTRO, new DateTime(2025, 5, 22), id: 5);
+        var tenista = new Tenista("Juan", "España", 180, 75, 1000, Mano.Diestro, new DateTime(2025, 5, 22), id: 5);
 
         // Act
         var resultado = tenista.Validate();

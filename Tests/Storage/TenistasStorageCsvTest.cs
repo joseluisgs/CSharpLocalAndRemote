@@ -70,7 +70,7 @@ public class TenistasStorageCsvTest
         var file = new FileInfo(tempFilePath);
         var tenistas = new List<Tenista>
         {
-            new("Roger Federer", "Suiza", 185, 85, 2000, Mano.DIESTRO, new DateTime(1981, 8, 8), id: 1)
+            new("Roger Federer", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1)
         };
 
         var result = await _storage.ExportAsync(file, tenistas);
@@ -94,7 +94,7 @@ public class TenistasStorageCsvTest
 
         var tenistas = new List<Tenista>
         {
-            new("Roger Federer", "Suiza", 185, 85, 2000, Mano.DIESTRO, new DateTime(1981, 8, 8), id: 1)
+            new("Roger Federer", "Suiza", 185, 85, 2000, Mano.Diestro, new DateTime(1981, 8, 8), id: 1)
         };
 
         // Asegúrate de que el directorio no exista

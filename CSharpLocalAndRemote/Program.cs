@@ -3,6 +3,9 @@
 using System.Text;
 using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Database;
+using CSharpLocalAndRemote.Dto;
+using CSharpLocalAndRemote.Mapper;
+using CSharpLocalAndRemote.Notification;
 using CSharpLocalAndRemote.Repository;
 using CSharpLocalAndRemote.Rest;
 using CSharpLocalAndRemote.Storage;
@@ -11,12 +14,36 @@ using Microsoft.EntityFrameworkCore;
 Console.OutputEncoding = Encoding.UTF8; // Necesario para mostrar emojis
 Console.WriteLine("🎾🎾 Hola Tenistas! 🎾🎾");
 
+// Cramos las notificaciones
+var notifications = new TenistasNotifications();
+
+// Suscribirse al canal (opcional, se puede hacer en otro lugar)
+
+// Crear y iniciar una tarea para la recepción de notificaciones
+var receiveTask = Task.Run(async () =>
+{
+    while (await notifications.Notifications.WaitToReadAsync(notifications.CancellationToken))
+        if (notifications.Notifications.TryRead(out var notification))
+            Console.WriteLine($"🚀Recibida notificación: {notification}");
+});
+
+await Task.Delay(1000); // Esperamos un segundo para que se suscriba
+
+
 // Ahora vamos con el almacenamiento JSON
 var storageJson = new TenistasStorageJson();
 
 var tenistas = storageJson.ImportAsync(new FileInfo("Data/tenistas.json")).Result.Value ?? [];
 
 Console.WriteLine($"Tenistas importados: {tenistas.Count}");
+
+await notifications.Send(new Notification<TenistaDto>(
+        NotificationType.Created,
+        tenistas[0].ToTenistaDto(),
+        "Tenista creado",
+        DateTime.Now
+    )
+);
 
 
 // Creamos el EntityManager, que es el encargado encapsular el trabajo con la base de datos
@@ -122,6 +149,14 @@ localRepository.GetAllAsync().Result.Match(
 
 tenistas.ForEach(async tenista => localRepository.SaveAsync(tenista));
 
+await notifications.Send(new Notification<TenistaDto>(
+        NotificationType.Refresh,
+        null,
+        "Tenistas Refrescados",
+        DateTime.Now
+    )
+);
+
 // Obtenemos todos los tenistas de la base de datos
 localRepository.GetAllAsync().Result.Match(
     tenistas =>
@@ -188,3 +223,20 @@ remoteRepository.DeleteAsync(-1).Result.Match(
     id => Console.WriteLine($"Tenista remoto eliminado con id: {id}"),
     error => Console.WriteLine($"Error al eliminar el tenista remoto: {error}")
 );
+
+// Voy a leer un csv
+new TenistasStorageCsv().ImportAsync(new FileInfo("Data/tenistas.csv")).Result.Match(
+    tenistas =>
+    {
+        Console.WriteLine($"Tenistas importados: {tenistas.Count}");
+        tenistas.ForEach(Console.WriteLine);
+    },
+    error => Console.WriteLine($"Error al importar los tenistas: {error}")
+);
+
+// Escritura de un csv
+new TenistasStorageCsv().ExportAsync(new FileInfo("Data/tenistas_export.csv"), tenistas).Wait();
+
+Console.WriteLine("🎾🎾 Adiós Tenistas! 🎾🎾");
+notifications.Stop(); // Detener las notificaciones
+receiveTask.Wait(); // Esperar a que la tarea termine de manera segura

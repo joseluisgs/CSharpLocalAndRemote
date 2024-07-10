@@ -128,6 +128,46 @@ public class TenistasRepositoryLocal : ITenistasRepository
         await _db.Database.EnsureCreatedAsync(); // Creamos la base de datos si no existe
         await _db.SaveChangesAsync(); // Guardamos los cambios
         await _db.RemoveAllAsync(); // Borramos todos los registros porque es un repositorio local
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<Result<int, TenistaError>> SaveAllAsync(List<Tenista> tenistas)
+    {
+        _logger.Debug("Guardando todos los tenistas locales en bd");
+        try
+        {
+            var timeStamp = DateTime.Now.ToString("o"); // Obtenemos la fecha y hora actual
+            var entitiesToSave = tenistas.Select(entity => entity.ToTenistaEntity()).ToList();
+            entitiesToSave.ForEach(entity =>
+            {
+                entity.CreatedAt = timeStamp; // Añadimos la fecha de creación
+                entity.UpdatedAt = timeStamp; // Añadimos la fecha de actualización
+            });
+            _db.Set<TenistaEntity>().AddRange(entitiesToSave); // Añadimos los tenistas a la base de datos
+            await _db.SaveChangesAsync(); // Guardamos los cambios
+            return Result.Success<int, TenistaError>(entitiesToSave.Count);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<int, TenistaError>(new TenistaError.DatabaseError(
+                $"No se han guardando los tenistas: {ex.Message}"));
+        }
+    }
+
+    public async Task<Result<bool, TenistaError>> RemoveAllAsync()
+    {
+        _logger.Debug("Borrando todos los tenistas locales en bd");
+        try
+        {
+            await _db.RemoveAllAsync(); // Borramos todos los registros porque es un repositorio local
+            await _db.SaveChangesAsync();
+            return Result.Success<bool, TenistaError>(true);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<bool, TenistaError>(new TenistaError.DatabaseError(
+                $"No se han borrando los tenistas: {ex.Message}"));
+        }
     }
 }
 

@@ -1,19 +1,82 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Text;
-using CSharpFunctionalExtensions;
+using CSharpLocalAndRemote.Cache;
 using CSharpLocalAndRemote.Database;
-using CSharpLocalAndRemote.Dto;
-using CSharpLocalAndRemote.Mapper;
 using CSharpLocalAndRemote.Notification;
 using CSharpLocalAndRemote.Repository;
 using CSharpLocalAndRemote.Rest;
+using CSharpLocalAndRemote.Service;
 using CSharpLocalAndRemote.Storage;
 using Microsoft.EntityFrameworkCore;
 
 Console.OutputEncoding = Encoding.UTF8; // Necesario para mostrar emojis
-Console.WriteLine("🎾🎾 Hola Tenistas! 🎾🎾");
+Console.WriteLine("🎾🎾 ¡Hola Tenistas! 🎾🎾");
 
+var manager = new EntityManager<TenistaEntity>(
+    new TenistasDbContext(
+        new DbContextOptionsBuilder<TenistasDbContext>()
+            .UseSqlite("Data Source=tenistas.db")
+            .Options
+    )
+);
+
+const string baseUrl = "https://my-json-server.typicode.com/joseluisgs/KotlinLocalAndRemote/";
+var client = RefitClient.CreateClient(baseUrl);
+
+var tenistasService = new TenistasService(
+    new TenistasRepositoryLocal(manager.Context),
+    new TenistasRepositoryRemote(client),
+    new TenistasCache(5),
+    new TenistasStorageCsv(),
+    new TenistasStorageJson(),
+    new TenistasNotifications(),
+    5000
+);
+
+// Creamos el trabajo de notificaciones
+Console.WriteLine("🔊 Escuchando notificaciones de tenistas 🔊");
+var notifications = tenistasService.Notifications.Subscribe(notification =>
+{
+    switch (notification!.Type)
+    {
+        case NotificationType.Created:
+            Console.WriteLine("🟢 Notificación de creación de tenista: " + notification.Message + " -> " +
+                              notification.Item);
+            break;
+        case NotificationType.Updated:
+            Console.WriteLine("🟠 Notificación de actualización de tenista: " + notification.Message + " -> " +
+                              notification.Item);
+            break;
+        case NotificationType.Deleted:
+            Console.WriteLine("🔴 Notificación de eliminación de tenista: " + notification.Message);
+            break;
+        case NotificationType.Refresh:
+            Console.WriteLine("🔵 Notificación de refresco de tenistas: " + notification.Message);
+            break;
+        default:
+            Console.WriteLine("🟣 Notificación desconocida: " + notification.Message);
+            break;
+    }
+});
+
+await Task.Delay(2000);
+
+Console.WriteLine("🔄 Refrescamos los tenistas 🔄");
+tenistasService.EnableAutoRefresh();
+
+await Task.Delay(2000);
+
+
+Console.WriteLine("🔇 Desactivamos la escucha de notificaciones de tenistas 🔇");
+
+tenistasService.DisableAutoRefresh();
+notifications.Dispose();
+
+Console.WriteLine("🎾🎾 Adiós Tenistas! 🎾🎾");
+
+
+/*
 // Cramos las notificaciones
 var notifications = new TenistasNotifications();
 Console.WriteLine("Notificaciones creadas");
@@ -39,6 +102,7 @@ await notifications.Send(new Notification<TenistaDto>(
         DateTime.Now
     )
 );
+
 
 
 // Creamos el EntityManager, que es el encargado encapsular el trabajo con la base de datos
@@ -232,5 +296,5 @@ new TenistasStorageCsv().ImportAsync(new FileInfo("Data/tenistas.csv")).Result.M
 // Escritura de un csv
 new TenistasStorageCsv().ExportAsync(new FileInfo("Data/tenistas_export.csv"), tenistas).Wait();
 
-Console.WriteLine("🎾🎾 Adiós Tenistas! 🎾🎾");
-notifications.Stop(); // Detener las notificaciones
+
+notifications.Stop(); // Detener las notificaciones*/

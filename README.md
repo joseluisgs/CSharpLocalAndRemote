@@ -64,6 +64,17 @@ A lo largo del proyecto también usaremos [RxNet](https://reactivex.io/), que es
 programación reactiva de forma sencilla y eficiente. Sobre todo en las notificaciones.
 
 ¿Podríamos pensar cuál es mejor para este proyecto?
+- `Task<T>` es parte de la biblioteca estándar de tareas asincrónicas en .NET y es ideal para modelar operaciones asincrónicas que se completan una vez (one-time events).
+- `IObservable<T>` es parte de Reactive Extensions (Rx), y es adecuado para trabajar con flujos de datos continuos o múltiples elementos emitidos a lo largo del tiempo.
+
+Recomendaciones:
+- Flujos de Datos Continuos o Múltiples Emisiones: Si tu aplicación se beneficia del manejo de eventos o flujos de datos continuos, IObservable<T> es la mejor opción.
+- Operaciones Discretas y Puntuales: Para operaciones que se completan una sola vez y no se emiten múltiples valores en el tiempo, Task<T> sigue siendo el camino más simple y directo
+
+Esto es parecido a las dudas que hemos tenido en otros proyectos en Kotlin y Java
+- Kotlin: async/await vs Flows
+- Java: CompletableFuture vs Project Reactor
+
 
 ## Railway Oriented Programming
 

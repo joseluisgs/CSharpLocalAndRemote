@@ -256,4 +256,93 @@ public class TenistasServiceTest
 
         _mockRemoteRepository.Verify(repo => repo.SaveAsync(It.IsAny<Tenista>()), Times.Never);
     }
+
+    [Test]
+    [DisplayName("Debe actualizar un tenista con éxito")]
+    public async Task UpdateAsync_Exito()
+    {
+        // Arrange
+        _mockLocalRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync(Result.Success<Tenista, TenistaError>(testTenista));
+        _mockRemoteRepository.Setup(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()))
+            .ReturnsAsync(Result.Success<Tenista, TenistaError>(testTenista));
+        _mockLocalRepository.Setup(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()))
+            .ReturnsAsync(Result.Success<Tenista, TenistaError>(testTenista));
+        _mockNotificationsService.Setup(service => service.Send(It.IsAny<Notification<TenistaDto>>()));
+        _mockCache.Setup(cache => cache.Put(It.IsAny<long>(), It.IsAny<Tenista>()));
+
+        // Act
+        var result = await _tenistasService.UpdateAsync(1, testTenista);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True, "El resultado debe ser exitoso");
+            Assert.That(result.Value, Is.EqualTo(testTenista),
+                "El tenista devuelto debe ser el mismo que el actualizado");
+        });
+        _mockLocalRepository.Verify(repo => repo.GetByIdAsync(1), Times.Once);
+        _mockRemoteRepository.Verify(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Once);
+        _mockLocalRepository.Verify(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Once);
+        _mockNotificationsService.Verify(service => service.Send(It.IsAny<Notification<TenistaDto>>()), Times.Once);
+        _mockCache.Verify(cache => cache.Put(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Once);
+    }
+
+    [Test]
+    [DisplayName("Debe fallar al actualizar un tenista no existente")]
+    public async Task UpdateAsync_TenistaNoExistente()
+    {
+        // Arrange
+        _mockRemoteRepository.Setup(repo => repo.UpdateAsync(It.IsAny<long>(), testTenista))
+            .ReturnsAsync(Result.Failure<Tenista, TenistaError>(new TenistaError.RemoteError("404")));
+        // Act
+        var result = await _tenistasService.UpdateAsync(1, testTenista);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.False, "El resultado debe ser fallido");
+            Assert.That(result.Error, Is.InstanceOf<TenistaError.RemoteError>(),
+                "Debe fallar por un error remoto");
+            Assert.That(result.Error.ToString(), Is.EqualTo("ERROR: 404"),
+                "El mensaje del error debe ser el esperado");
+        });
+
+        _mockRemoteRepository.Verify(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Once);
+        _mockLocalRepository.Verify(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Never);
+    }
+
+    [Test]
+    [DisplayName("Debe fallar al actualizar un tenista por validación")]
+    public async Task UpdateAsync_FalloValidacion()
+    {
+        // Arrange
+        var invalidTenista = new Tenista("Test", "", 0, 0, 0, Mano.Diestro, DateTime.MinValue, id: 2);
+        _mockLocalRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync(Result.Success<Tenista, TenistaError>(testTenista));
+        _mockRemoteRepository.Setup(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()))
+            .ReturnsAsync(
+                Result.Failure<Tenista, TenistaError>(
+                    new TenistaError.ValidationError("ERROR: La altura debe ser mayor a 0")));
+
+        // Act
+        var result = await _tenistasService.UpdateAsync(1, invalidTenista);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.False, "El resultado debe ser fallido");
+            Assert.That(result.Error, Is.InstanceOf<TenistaError.ValidationError>(),
+                "Debe fallar por un error de validación");
+            Assert.That(result.Error.ToString(), Is.EqualTo("ERROR: La altura debe ser mayor a 0"),
+                "El mensaje del error debe ser el esperado");
+        });
+
+        _mockRemoteRepository.Verify(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Never);
+        _mockLocalRepository.Verify(repo => repo.GetByIdAsync(1), Times.Never);
+        _mockLocalRepository.Verify(repo => repo.UpdateAsync(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Never);
+        _mockNotificationsService.Verify(service => service.Send(It.IsAny<Notification<TenistaDto>>()), Times.Never);
+        _mockCache.Verify(cache => cache.Put(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Never);
+        _mockCache.Verify(cache => cache.Remove(It.IsAny<long>()), Times.Never);
+    }
 }

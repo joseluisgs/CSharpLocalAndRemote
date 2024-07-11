@@ -345,4 +345,60 @@ public class TenistasServiceTest
         _mockCache.Verify(cache => cache.Put(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Never);
         _mockCache.Verify(cache => cache.Remove(It.IsAny<long>()), Times.Never);
     }
+
+    [Test]
+    [DisplayName("Debe eliminar un tenista con éxito")]
+    public async Task DeleteAsync_Exito()
+    {
+        // Arrange
+        _mockLocalRepository.Setup(repo => repo.GetByIdAsync(It.IsAny<long>()))
+            .ReturnsAsync(Result.Success<Tenista, TenistaError>(testTenista));
+        _mockRemoteRepository.Setup(repo => repo.DeleteAsync(It.IsAny<long>()))
+            .ReturnsAsync(Result.Success<long, TenistaError>(1));
+        _mockLocalRepository.Setup(repo => repo.DeleteAsync(It.IsAny<long>()))
+            .ReturnsAsync(Result.Success<long, TenistaError>(1));
+
+        // Act
+        var result = await _tenistasService.DeleteAsync(1);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True, "El resultado debe ser exitoso");
+            Assert.That(result.Value, Is.EqualTo(1),
+                "El ID del tenista eliminado debe ser el mismo que el solicitado");
+        });
+
+        _mockRemoteRepository.Verify(repo => repo.DeleteAsync(It.IsAny<long>()), Times.Once);
+        _mockLocalRepository.Verify(repo => repo.DeleteAsync(It.IsAny<long>()), Times.Once);
+        _mockCache.Verify(cache => cache.Remove(It.IsAny<long>()), Times.Once);
+        _mockNotificationsService.Verify(service => service.Send(It.IsAny<Notification<TenistaDto>>()), Times.Once);
+    }
+
+    [Test]
+    [DisplayName("Debe fallar al eliminar un tenista no existente")]
+    public async Task DeleteAsync_TenistaNoExistente()
+    {
+        // Arrange
+        _mockRemoteRepository.Setup(repo => repo.DeleteAsync(It.IsAny<long>()))
+            .ReturnsAsync(Result.Failure<long, TenistaError>(new TenistaError.RemoteError("404")));
+
+        // Act
+        var result = await _tenistasService.DeleteAsync(1);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.False, "El resultado debe ser fallido");
+            Assert.That(result.Error, Is.InstanceOf<TenistaError.RemoteError>(),
+                "Debe fallar por un error remoto");
+            Assert.That(result.Error.ToString(), Is.EqualTo("ERROR: 404"),
+                "El mensaje del error debe ser el esperado");
+        });
+
+        _mockRemoteRepository.Verify(repo => repo.DeleteAsync(It.IsAny<long>()), Times.Once);
+        _mockLocalRepository.Verify(repo => repo.DeleteAsync(It.IsAny<long>()), Times.Never);
+        _mockCache.Verify(cache => cache.Remove(It.IsAny<long>()), Times.Never);
+        _mockNotificationsService.Verify(service => service.Send(It.IsAny<Notification<TenistaDto>>()), Times.Never);
+    }
 }

@@ -7,8 +7,10 @@ using CSharpLocalAndRemote.Repository;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tests;
+namespace Tests.Repository;
 
+[TestFixture]
+[TestOf(typeof(TenistasRepositoryLocal))]
 public class TenistasRepositoryLocalTest
 {
     private SqliteConnection _connection;

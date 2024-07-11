@@ -2,6 +2,20 @@
 
 ![CSharp](./images/csharp.webp)
 
+- [C# Local and Remote](#c-local-and-remote)
+  - [Acerca de](#acerca-de)
+  - [Programación asíncrona y reactiva](#programación-asíncrona-y-reactiva)
+  - [Railway Oriented Programming](#railway-oriented-programming)
+  - [Almacenamiento y Serialización](#almacenamiento-y-serialización)
+  - [Cache en Memoria](#cache-en-memoria)
+  - [Repositorio Local](#repositorio-local)
+  - [Repositorio Remoto](#repositorio-remoto)
+  - [Validador](#validador)
+  - [Notificaciones](#notificaciones)
+  - [Servicio](#servicio)
+  - [Test](#test)
+  - [Inyección de Dependencias](#inyección-de-dependencias)
+  - [Lectura de parámetros de configuración](#lectura-de-parámetros-de-configuración)
 
 
 ## Acerca de
@@ -89,7 +103,7 @@ Para ello debemos instalar las extensiones funcionales de C#.
 
 ```bash
 dotnet add package CSharpFunctionalExtensions
-````
+```
 
 Para ello debemos entender que es el Happy Path y el Error Path. El Happy Path es el camino feliz, es decir, el camino
 que se espera que se siga. El Error Path es el camino de error, es decir, el camino que se sigue cuando se produce un
@@ -215,6 +229,15 @@ datos de forma sencilla y eficiente.
 Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/850a43b577bbe95d7d08e5b84e0a51887a22996a).
 
+## Validador
+
+Para la realización del validador de datos, hemos usado una función de extensión de C# que nos permite validar los
+datos de forma sencilla y eficiente.
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/850a43b577bbe95d7d08e5b84e0a51887a22996a).
+
+
 
 ## Notificaciones
 
@@ -253,6 +276,18 @@ sencilla y eficiente.
 
 Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/42f96880bc8faceaf1bd95aa6ee24c943b26a4f2).
+
+## Servicio
+
+El siguiente paso es crear un servicio que encapsule los repositorios local y remoto y la caché en memoria. Para ello,
+crearemos una interfaz `Service` que definirá las operaciones de lectura y escritura de datos.
+
+De esta manera, podremos utilizar el servicio en nuestra aplicación para almacenar y recuperar los datos de forma
+sencilla y eficiente.
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/0ab2ea29428d0a8de364437b840eb326e2b851e0).
+
 
 
 ## Test
@@ -296,3 +331,33 @@ las referencias necesarias.
 A la hora de testear repositorios se ha seguido las guía de [Testing EF Core Applications](https://learn.microsoft.com/en-us/ef/core/testing/), al movernos 
 en una base de datos relacional, lo lógico es que sigamos con SQLite en memoria. Recuerda que para configurar el test debes abrir y cerrar la conexión a la base de datos.
 
+A la hora de testear el servicio, hemos usado mocks para simular el comportamiento de los repositorios y de la caché en con los mocks de [Moq](https://github.com/devlooped/moq).
+  
+  ```bash
+  dotnet add package Moq
+  ```
+
+## Inyección de Dependencias
+
+Para la inyección de dependencias hemos usado `HostBuilder`. HostBuilder es una parte fundamental de la infraestructura de aplicaciones basadas en el runtime de host genérico proporcionado por .NET Core. Es una clase que proporciona un mecanismo para configurar y construir el runtime de host en el que se ejecuta la aplicación. Nos aporta:
+- Configuración de la Aplicación: El HostBuilder es responsable de configurar aspectos como la configuración de la aplicación, los servicios y la lógica necesaria para arrancar y detener la aplicación.
+- Inyección de Dependencias: Facilita la configuración de la inyección de dependencias en la aplicación, lo que permite registrar y resolver servicios necesarios para el funcionamiento de la aplicación, para ello usaremos `GetRequiredService<T>()`.
+- Bootstrapping de la Aplicación: Prepara toda la infraestructura necesaria para que la aplicación se ejecute correctamente, como la configuración del entorno, la configuración del logging, la configuración del manejo de excepciones, entre otros.
+
+Debemos instalar:
+```bash
+dotnet add package Microsoft.Extensions.Hosting
+dotnet add package Microsoft.Extensions.DependencyInjection
+```
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/05ff945e023a168f92bc3ccf051b24c68845091c).
+
+## Lectura de parámetros de configuración
+Usaremos el fichero de propiedades `appsettings.json` para leer los parámetros de configuración. Para ello, hemos creado distintas clases Settings con las que vamos a 
+encapsular los parámetros de configuración. Para ello, hemos usado la librería de [Microsoft.Extensions.Configuration](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration?view=dotnet-plat-ext-6.0).
+
+```bash
+dotnet add package Microsoft.Extensions.Configuration
+dotnet add package Microsoft.Extensions.Configuration.Json
+```

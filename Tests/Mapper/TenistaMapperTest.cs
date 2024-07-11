@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using CSharpLocalAndRemote.Database;
 using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.Mapper;
 using CSharpLocalAndRemote.model;
@@ -32,6 +33,21 @@ public class TenistaMapperTest
         "1986-06-03",
         IsDeleted: false
     );
+
+    private readonly TenistaEntity tenistaEntity = new()
+    {
+        Id = 1,
+        Nombre = "Rafael Nadal",
+        Pais = "España",
+        Altura = 185,
+        Peso = 85,
+        Puntos = 10250,
+        Mano = "Diestro",
+        FechaNacimiento = "1986-06-03",
+        IsDeleted = false,
+        CreatedAt = DateTime.Now.ToString("o"),
+        UpdatedAt = DateTime.Now.ToString("o")
+    };
 
     [Test]
     [DisplayName("Convertir un TenistaDto en un Tenista")]
@@ -70,6 +86,38 @@ public class TenistaMapperTest
             Assert.That(testDto.FechaNacimiento, Is.EqualTo(tenistaDto.FechaNacimiento),
                 "FechaNacimiento deben ser iguales");
             Assert.That(testDto.IsDeleted, Is.EqualTo(tenistaDto.IsDeleted), "IsDeleted deben ser iguales");
+        });
+    }
+
+    [Test]
+    [DisplayName("Convertir un Tenista en un TenistaEntity")]
+    public void ToTenistaEntity()
+    {
+        var testEntity = tenista.ToTenistaEntity();
+        Assert.Multiple(() =>
+        {
+            Assert.That(testEntity.Id, Is.EqualTo(tenistaEntity.Id), "Id deben ser iguales");
+            Assert.That(testEntity.Nombre, Is.EqualTo(tenistaEntity.Nombre), "Nombre deben ser iguales");
+            Assert.That(testEntity.Pais, Is.EqualTo(tenistaEntity.Pais), "Pais deben ser iguales");
+            Assert.That(testEntity.Altura, Is.EqualTo(tenistaEntity.Altura), "Altura deben ser iguales");
+            Assert.That(testEntity.Peso, Is.EqualTo(tenistaEntity.Peso), "Peso deben ser iguales");
+            Assert.That(testEntity.Puntos, Is.EqualTo(tenistaEntity.Puntos), "Puntos deben ser iguales");
+        });
+    }
+
+    [Test]
+    [DisplayName("Convertir un TenistaEntity en un Tenista")]
+    public void ToTenistaFromEntity()
+    {
+        var testTenista = tenistaEntity.ToTenista();
+        Assert.Multiple(() =>
+        {
+            Assert.That(testTenista.Id, Is.EqualTo(tenistaEntity.Id), "Id deben ser iguales");
+            Assert.That(testTenista.Nombre, Is.EqualTo(tenistaEntity.Nombre), "Nombre deben ser iguales");
+            Assert.That(testTenista.Pais, Is.EqualTo(tenistaEntity.Pais), "Pais deben ser iguales");
+            Assert.That(testTenista.Altura, Is.EqualTo(tenistaEntity.Altura), "Altura deben ser iguales");
+            Assert.That(testTenista.Peso, Is.EqualTo(tenistaEntity.Peso), "Peso deben ser iguales");
+            Assert.That(testTenista.Puntos, Is.EqualTo(tenistaEntity.Puntos), "Puntos deben ser iguales");
         });
     }
 }

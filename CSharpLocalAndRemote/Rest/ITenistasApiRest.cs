@@ -5,6 +5,8 @@ namespace CSharpLocalAndRemote.Rest;
 
 public interface ITenistasApiRest
 {
+    const string ApiRestUrl = "https://my-json-server.typicode.com/joseluisgs/KotlinLocalAndRemote/";
+
     [Get("/tenistas")]
     Task<List<TenistaDto>> GetAllAsync();
 

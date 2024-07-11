@@ -10,25 +10,31 @@ using CSharpLocalAndRemote.Rest;
 using CSharpLocalAndRemote.Service;
 using CSharpLocalAndRemote.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 Console.OutputEncoding = Encoding.UTF8; // Necesario para mostrar emojis
 Console.WriteLine("🎾🎾 ¡Hola Tenistas! 🎾🎾");
 
-var manager = new EntityManager<TenistaEntity>(
-    new TenistasDbContext(
-        new DbContextOptionsBuilder<TenistasDbContext>()
-            .UseSqlite("Data Source=tenistas.db")
-            .EnableSensitiveDataLogging()
-            .Options
-    )
-);
+// Leemos la configuración
+// Configurar la infraestructura para leer el archivo appsettings.json
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json", true, true).Build();
 
-const string baseUrl = "https://my-json-server.typicode.com/joseluisgs/KotlinLocalAndRemote/";
-var client = RefitClient.CreateClient(baseUrl);
+// Leer la cadena de conexión y la URL base de la API
+var dataBaseName = configuration["Database:Name"] ?? "tenistas.db";
+var apiRestUrl = configuration["ApiRest:Url"] ?? ITenistasApiRest.ApiRestUrl;
 
 var tenistasService = new TenistasService(
-    new TenistasRepositoryLocal(manager.Context),
-    new TenistasRepositoryRemote(client),
+    new TenistasRepositoryLocal(new EntityManager<TenistaEntity>(
+        new TenistasDbContext(
+            new DbContextOptionsBuilder<TenistasDbContext>()
+                .UseSqlite("Data Source=" + dataBaseName)
+                .EnableSensitiveDataLogging()
+                .Options
+        )
+    ).Context),
+    new TenistasRepositoryRemote(RefitClient.CreateClient(apiRestUrl)),
     new TenistasCache(5),
     new TenistasStorageCsv(),
     new TenistasStorageJson(),

@@ -8,7 +8,7 @@ using CSharpLocalAndRemote.model;
 
 namespace CSharpLocalAndRemote.Storage;
 
-public class TenistasStorageCsv : ITenistasStorage
+public class TenistasStorageCsv : ITenistasStorageCsv
 {
     private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasStorageCsv>.GetLogger();
 

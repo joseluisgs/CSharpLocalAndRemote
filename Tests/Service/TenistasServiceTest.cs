@@ -22,8 +22,8 @@ public class TenistasServiceTest
         _mockCache = new Mock<ITenistasCache>();
         _mockLocalRepository = new Mock<ITenistasRepositoryLocal>();
         _mockRemoteRepository = new Mock<ITenistasRepositoryRemote>();
-        _mockCsvStorage = new Mock<ITenistasStorage>();
-        _mockJsonStorage = new Mock<ITenistasStorage>();
+        _mockCsvStorage = new Mock<ITenistasStorageCsv>();
+        _mockJsonStorage = new Mock<ITenistasStorageJson>();
         _mockNotificationsService = new Mock<ITenistasNotifications>();
 
         _tenistasService = new TenistasService(
@@ -40,8 +40,8 @@ public class TenistasServiceTest
     private Mock<ITenistasCache> _mockCache;
     private Mock<ITenistasRepositoryLocal> _mockLocalRepository;
     private Mock<ITenistasRepositoryRemote> _mockRemoteRepository;
-    private Mock<ITenistasStorage> _mockCsvStorage;
-    private Mock<ITenistasStorage> _mockJsonStorage;
+    private Mock<ITenistasStorageCsv> _mockCsvStorage;
+    private Mock<ITenistasStorageJson> _mockJsonStorage;
     private Mock<ITenistasNotifications> _mockNotificationsService;
     private TenistasService _tenistasService;
 

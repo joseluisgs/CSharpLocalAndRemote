@@ -10,7 +10,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace CSharpLocalAndRemote.Storage;
 
-public class TenistasStorageJson : ITenistasStorage
+public class TenistasStorageJson : ITenistasStorageJson
 {
     private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasStorageJson>.GetLogger();
 

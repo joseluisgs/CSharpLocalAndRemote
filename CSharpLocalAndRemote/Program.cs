@@ -4,6 +4,7 @@ using System.Text;
 using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Cache;
 using CSharpLocalAndRemote.Database;
+using CSharpLocalAndRemote.Di;
 using CSharpLocalAndRemote.Notification;
 using CSharpLocalAndRemote.Repository;
 using CSharpLocalAndRemote.Rest;
@@ -14,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 
 Console.OutputEncoding = Encoding.UTF8; // Necesario para mostrar emojis
 Console.WriteLine("🎾🎾 ¡Hola Tenistas! 🎾🎾");
+
+var tenistasService2 = HostBuilderHelper.GetService<ITenistasService>(args);
 
 // Leemos la configuración
 // Configurar la infraestructura para leer el archivo appsettings.json

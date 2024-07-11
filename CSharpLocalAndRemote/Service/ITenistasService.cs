@@ -1,12 +1,16 @@
 ﻿using CSharpFunctionalExtensions;
+using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.Error;
 using CSharpLocalAndRemote.model;
+using CSharpLocalAndRemote.Notification;
 
 namespace CSharpLocalAndRemote.Service;
 
 public interface ITenistasService
 {
     const long RefreshTime = 5000;
+
+    IObservable<Notification<TenistaDto>?> Notifications { get; }
 
     Task<Result<List<Tenista>, TenistaError>> GetAllAsync(bool fromRemote);
 

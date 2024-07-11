@@ -16,12 +16,8 @@ public class TenistasNotifications : ITenistasNotifications
     private readonly BehaviorSubject<Notification<TenistaDto>?> _notificationsSubject = new(null); // Inicialmente null
 
     // Propiedad para obtener el flujo de notificaciones, pero solo las que no son null
-    public IObservable<Notification<TenistaDto>?> GetNotifications()
-    {
-        return _notificationsSubject.AsObservable()
-            .Skip(1);
-        // Saltamos el primer null, tambien podemos usar Where(x => x != null)
-    }
+    public IObservable<Notification<TenistaDto>?> Notifications => _notificationsSubject.AsObservable().Skip(1);
+    // Saltamos el primer null, tambien podemos usar Where(x => x != null)
 
 
     public Task Send(Notification<TenistaDto> notification)

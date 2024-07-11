@@ -42,7 +42,7 @@ public class TenistasService : ITenistasService
     }
 
     // Propiedad para obtener el flujo de notificaciones, pero solo las que no son null
-    public IObservable<Notification<TenistaDto>?> Notifications => _notificationsService.GetNotifications();
+    public IObservable<Notification<TenistaDto>?> Notifications => _notificationsService.Notifications;
 
 
     public async Task<Result<List<Tenista>, TenistaError>> GetAllAsync(bool fromRemote)

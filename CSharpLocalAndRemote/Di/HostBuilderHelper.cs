@@ -107,10 +107,4 @@ public static class HostBuilderHelper
             })
             .Build();
     }
-
-
-    public static T GetService<T>(string[] args)
-    {
-        return BuildHost(args).Services.GetRequiredService<T>();
-    }
 }

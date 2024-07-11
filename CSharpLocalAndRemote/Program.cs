@@ -2,22 +2,16 @@
 
 using System.Text;
 using CSharpFunctionalExtensions;
-using CSharpLocalAndRemote.Cache;
-using CSharpLocalAndRemote.Database;
 using CSharpLocalAndRemote.Di;
 using CSharpLocalAndRemote.Notification;
-using CSharpLocalAndRemote.Repository;
-using CSharpLocalAndRemote.Rest;
 using CSharpLocalAndRemote.Service;
-using CSharpLocalAndRemote.Storage;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 Console.OutputEncoding = Encoding.UTF8; // Necesario para mostrar emojis
 Console.WriteLine("🎾🎾 ¡Hola Tenistas! 🎾🎾");
 
-var tenistasService2 = HostBuilderHelper.GetService<ITenistasService>(args);
 
+/*
 // Leemos la configuración
 // Configurar la infraestructura para leer el archivo appsettings.json
 var configuration = new ConfigurationBuilder()
@@ -44,6 +38,11 @@ var tenistasService = new TenistasService(
     new TenistasNotifications(),
     5000
 );
+*/
+
+// Con inyección de dependencias
+var host = HostBuilderHelper.BuildHost(args);
+var tenistasService = host.Services.GetRequiredService<ITenistasService>();
 
 
 // Creamos el trabajo de notificaciones

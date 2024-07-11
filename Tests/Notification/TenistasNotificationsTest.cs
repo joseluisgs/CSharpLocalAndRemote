@@ -23,7 +23,7 @@ public class TenistasNotificationsTest
         Notification<TenistaDto> result = null;
 
         // Act
-        var subscription = tenistasNotifications.GetNotifications().Subscribe(n => result = n);
+        var subscription = tenistasNotifications.Notifications.Subscribe(n => result = n);
         await tenistasNotifications.Send(notification);
         //await Task.Delay(500); // Pequeña espera para asegurar la recepción de la notificación
 
@@ -57,7 +57,7 @@ public class TenistasNotificationsTest
         Notification<TenistaDto> result = null;
 
         // Act
-        var subscription = tenistasNotifications.GetNotifications().Subscribe(n => result = n);
+        var subscription = tenistasNotifications.Notifications.Subscribe(n => result = n);
         await tenistasNotifications.Send(notification1);
         await tenistasNotifications.Send(notification2);
         //await Task.Delay(500); // Pequeña espera para asegurar la recepción de la notificación

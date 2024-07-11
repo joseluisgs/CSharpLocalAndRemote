@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CSharpLocalAndRemote.Repository;
 
-public class TenistasRepositoryLocal : ITenistasRepository
+public class TenistasRepositoryLocal : ITenistasRepositoryLocal
 {
     private readonly DbContext _db;
     private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasRepositoryLocal>.GetLogger();

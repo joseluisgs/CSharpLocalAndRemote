@@ -17,16 +17,16 @@ public class TenistasService : ITenistasService
     private readonly ITenistasCache _cache;
     private readonly TenistasStorageCsv _csvStorage;
     private readonly TenistasStorageJson _jsonStorage;
-    private readonly TenistasRepositoryLocal _localRepository;
+    private readonly ITenistasRepositoryLocal _localRepository;
     private readonly object _lock = new();
     private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasService>.GetLogger();
     private readonly TenistasNotifications _notificationsService;
     private readonly long _refreshTime;
-    private readonly TenistasRepositoryRemote _remoteRepository;
+    private readonly ITenistasRepositoryRemote _remoteRepository;
     private int _isRefreshing; // 0 = false, 1 = true
 
 
-    public TenistasService(TenistasRepositoryLocal localReository, TenistasRepositoryRemote remoteRepository,
+    public TenistasService(ITenistasRepositoryLocal localReository, ITenistasRepositoryRemote remoteRepository,
         ITenistasCache cache, TenistasStorageCsv csvStorage, TenistasStorageJson jsonStorage,
         TenistasNotifications notificationsService, long refreshTime)
     {

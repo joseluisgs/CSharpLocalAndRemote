@@ -7,7 +7,7 @@ using CSharpLocalAndRemote.Rest;
 
 namespace CSharpLocalAndRemote.Repository;
 
-public class TenistasRepositoryRemote : ITenistasRepository
+public class TenistasRepositoryRemote : ITenistasRepositoryRemote
 {
     private readonly ITenistasApiRest _api;
     private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasRepositoryLocal>.GetLogger();

@@ -15,8 +15,8 @@ namespace CSharpLocalAndRemote.Service;
 public class TenistasService : ITenistasService
 {
     private readonly ITenistasCache _cache;
-    private readonly TenistasStorageCsv _csvStorage;
-    private readonly TenistasStorageJson _jsonStorage;
+    private readonly ITenistasStorage _csvStorage;
+    private readonly ITenistasStorage _jsonStorage;
     private readonly ITenistasRepositoryLocal _localRepository;
     private readonly object _lock = new();
     private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasService>.GetLogger();
@@ -27,7 +27,7 @@ public class TenistasService : ITenistasService
 
 
     public TenistasService(ITenistasRepositoryLocal localReository, ITenistasRepositoryRemote remoteRepository,
-        ITenistasCache cache, TenistasStorageCsv csvStorage, TenistasStorageJson jsonStorage,
+        ITenistasCache cache, ITenistasStorage csvStorage, ITenistasStorage jsonStorage,
         ITenistasNotifications notificationsService, long refreshTime)
     {
         _logger.Debug("Creando TenistasService");

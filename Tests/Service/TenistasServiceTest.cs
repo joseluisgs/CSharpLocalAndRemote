@@ -22,8 +22,8 @@ public class TenistasServiceTest
         _mockCache = new Mock<ITenistasCache>();
         _mockLocalRepository = new Mock<ITenistasRepositoryLocal>();
         _mockRemoteRepository = new Mock<ITenistasRepositoryRemote>();
-        _mockCsvStorage = new Mock<TenistasStorageCsv>();
-        _mockJsonStorage = new Mock<TenistasStorageJson>();
+        _mockCsvStorage = new Mock<ITenistasStorage>();
+        _mockJsonStorage = new Mock<ITenistasStorage>();
         _mockNotificationsService = new Mock<ITenistasNotifications>();
 
         _tenistasService = new TenistasService(
@@ -40,8 +40,8 @@ public class TenistasServiceTest
     private Mock<ITenistasCache> _mockCache;
     private Mock<ITenistasRepositoryLocal> _mockLocalRepository;
     private Mock<ITenistasRepositoryRemote> _mockRemoteRepository;
-    private Mock<TenistasStorageCsv> _mockCsvStorage;
-    private Mock<TenistasStorageJson> _mockJsonStorage;
+    private Mock<ITenistasStorage> _mockCsvStorage;
+    private Mock<ITenistasStorage> _mockJsonStorage;
     private Mock<ITenistasNotifications> _mockNotificationsService;
     private TenistasService _tenistasService;
 
@@ -400,5 +400,170 @@ public class TenistasServiceTest
         _mockLocalRepository.Verify(repo => repo.DeleteAsync(It.IsAny<long>()), Times.Never);
         _mockCache.Verify(cache => cache.Remove(It.IsAny<long>()), Times.Never);
         _mockNotificationsService.Verify(service => service.Send(It.IsAny<Notification<TenistaDto>>()), Times.Never);
+    }
+
+    [Test]
+    [DisplayName("Debe importar datos desde un archivo CSV")]
+    public async Task ImportDataAsync_ImportarCsv()
+    {
+        // Arrange
+        var fileInfo = new FileInfo("test.csv");
+        _mockCsvStorage.Setup(storage => storage.ImportAsync(It.IsAny<FileInfo>()))
+            .ReturnsAsync(Result.Success<List<Tenista>, TenistaError.StorageError>([testTenista]));
+        _mockLocalRepository.Setup(repo => repo.SaveAllAsync(It.IsAny<List<Tenista>>()))
+            .ReturnsAsync(Result.Success<int, TenistaError>(1));
+
+        // Act
+        var result = await _tenistasService.ImportDataAsync(fileInfo);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True, "El resultado debe ser exitoso");
+            Assert.That(result.Value, Is.EqualTo(1), "Debe devolver el número de tenistas importados");
+        });
+
+        _mockCsvStorage.Verify(storage => storage.ImportAsync(fileInfo), Times.Once);
+    }
+
+
+    [Test]
+    [DisplayName("Debe importar datos desde un archivo JSON")]
+    public async Task ImportDataAsync_ImportarJson()
+    {
+        // Arrange
+        var fileInfo = new FileInfo("test.json");
+        _mockJsonStorage.Setup(storage => storage.ImportAsync(It.IsAny<FileInfo>()))
+            .ReturnsAsync(Result.Success<List<Tenista>, TenistaError.StorageError>([testTenista]));
+        _mockLocalRepository.Setup(repo => repo.SaveAllAsync(It.IsAny<List<Tenista>>()))
+            .ReturnsAsync(Result.Success<int, TenistaError>(1));
+
+        // Act
+        var result = await _tenistasService.ImportDataAsync(fileInfo);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True, "El resultado debe ser exitoso");
+            Assert.That(result.Value, Is.EqualTo(1), "Debe devolver el número de tenistas importados");
+        });
+
+        _mockJsonStorage.Verify(storage => storage.ImportAsync(fileInfo), Times.Once);
+    }
+
+    [Test]
+    [DisplayName("Debe fallar al importar con un formato no soportado")]
+    public async Task ImportDataAsync_FormatoNoSoportado()
+    {
+        // Arrange
+        var fileInfo = new FileInfo("test.txt");
+
+        // Act
+        var result = await _tenistasService.ImportDataAsync(fileInfo);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsFailure, Is.True, "El resultado debe ser fallido");
+            Assert.That(result.Error, Is.InstanceOf<TenistaError.StorageError>(),
+                "El error debe ser de tipo StorageError");
+            Assert.That(result.Error.ToString(), Contains.Substring("Formato de archivo no soportado"),
+                "El mensaje de error debe indicar que el formato no está soportado");
+        });
+    }
+
+    [Test]
+    [DisplayName("Debe exportar datos a un archivo CSV")]
+    public async Task ExportDataAsync_ExportarCsv()
+    {
+        // Arrange
+        var fileInfo = new FileInfo("test.csv");
+        _mockCsvStorage.Setup(storage => storage.ExportAsync(It.IsAny<FileInfo>(), It.IsAny<List<Tenista>>()))
+            .ReturnsAsync(Result.Success<int, TenistaError.StorageError>(1));
+        _mockLocalRepository.Setup(repo => repo.GetAllAsync())
+            .ReturnsAsync(Result.Success<List<Tenista>, TenistaError>([testTenista]));
+
+        // Act
+        var result = await _tenistasService.ExportDataAsync(fileInfo, false);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True, "El resultado debe ser exitoso");
+            Assert.That(result.Value, Is.EqualTo(1), "Debe devolver el número de tenistas exportados");
+        });
+
+        _mockCsvStorage.Verify(storage => storage.ExportAsync(It.IsAny<FileInfo>(), It.IsAny<List<Tenista>>()),
+            Times.Once);
+    }
+
+    [Test]
+    [DisplayName("Debe exportar datos a un archivo JSON")]
+    public async Task ExportDataAsync_ExportarJson()
+    {
+        // Arrange
+        var fileInfo = new FileInfo("test.json");
+        _mockJsonStorage.Setup(storage => storage.ExportAsync(It.IsAny<FileInfo>(), It.IsAny<List<Tenista>>()))
+            .ReturnsAsync(Result.Success<int, TenistaError.StorageError>(1));
+        _mockLocalRepository.Setup(repo => repo.GetAllAsync())
+            .ReturnsAsync(Result.Success<List<Tenista>, TenistaError>([testTenista]));
+
+        // Act
+        var result = await _tenistasService.ExportDataAsync(fileInfo, false);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True, "El resultado debe ser exitoso");
+            Assert.That(result.Value, Is.EqualTo(1), "Debe devolver el número de tenistas exportados");
+        });
+
+        _mockJsonStorage.Verify(storage => storage.ExportAsync(It.IsAny<FileInfo>(), It.IsAny<List<Tenista>>()),
+            Times.Once);
+    }
+
+    [Test]
+    [DisplayName("Debe fallar al exportar con un formato no soportado")]
+    public async Task ExportDataAsync_FormatoNoSoportado()
+    {
+        // Arrange
+        var fileInfo = new FileInfo("test.txt");
+
+        // Act
+        var result = await _tenistasService.ExportDataAsync(fileInfo, false);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsFailure, Is.True, "El resultado debe ser fallido");
+            Assert.That(result.Error, Is.InstanceOf<TenistaError.StorageError>(),
+                "El error debe ser de tipo StorageError");
+            Assert.That(result.Error.ToString(), Contains.Substring("Formato de archivo no soportado"),
+                "El mensaje de error debe indicar que el formato no está soportado");
+        });
+    }
+
+    [Test]
+    [DisplayName("Debe habilitar el auto refresco")]
+    public async Task EnableAutoRefresh_Habilitar()
+    {
+        // Arrange
+        _mockLocalRepository.Setup(repo => repo.GetAllAsync())
+            .ReturnsAsync(Result.Success<List<Tenista>, TenistaError>(new List<Tenista> { testTenista }));
+        _mockRemoteRepository.Setup(repo => repo.GetAllAsync())
+            .ReturnsAsync(Result.Success<List<Tenista>, TenistaError>(new List<Tenista> { testTenista }));
+        _mockLocalRepository.Setup(repo => repo.RemoveAllAsync());
+        _mockLocalRepository.Setup(repo => repo.SaveAllAsync(It.IsAny<List<Tenista>>()))
+            .ReturnsAsync(Result.Success<int, TenistaError>(1));
+
+        // Act
+        _tenistasService.EnableAutoRefresh();
+        await Task.Delay(1000); // Espera para que el auto refresco se ejecute
+
+        // Assert
+        _mockLocalRepository.Verify(repo => repo.GetAllAsync(), Times.Never);
+        _mockRemoteRepository.Verify(repo => repo.GetAllAsync(), Times.Once);
+        _mockLocalRepository.Verify(repo => repo.RemoveAllAsync(), Times.Once);
+        _mockLocalRepository.Verify(repo => repo.SaveAllAsync(It.IsAny<List<Tenista>>()), Times.Once);
     }
 }

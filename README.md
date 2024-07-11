@@ -245,6 +245,15 @@ emite los valores desde el principio.
 Enlace a
 los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/e82b41a78982661a0153ef65336cb38a8bf48202).
 
+El siguiente paso es crear un servicio que encapsule los repositorios local y remoto y la caché en memoria. Para ello,
+crearemos una interfaz `Service` que definirá las operaciones de lectura y escritura de datos.
+
+De esta manera, podremos utilizar el servicio en nuestra aplicación para almacenar y recuperar los datos de forma
+sencilla y eficiente.
+
+Enlace a
+los [commit de la sección](https://github.com/joseluisgs/CSharpLocalAndRemote/tree/42f96880bc8faceaf1bd95aa6ee24c943b26a4f2).
+
 
 ## Test
 

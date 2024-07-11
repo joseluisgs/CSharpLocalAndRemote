@@ -2,7 +2,7 @@
 
 public class Tenista
 {
-    public const long NewId = 0L;
+    public const long NewId = 0;
 
     // Constructor
     public Tenista(

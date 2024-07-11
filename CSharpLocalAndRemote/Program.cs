@@ -18,6 +18,7 @@ var manager = new EntityManager<TenistaEntity>(
     new TenistasDbContext(
         new DbContextOptionsBuilder<TenistasDbContext>()
             .UseSqlite("Data Source=tenistas.db")
+            .EnableSensitiveDataLogging()
             .Options
     )
 );
@@ -61,14 +62,15 @@ var notifications = tenistasService.Notifications.Subscribe(notification =>
     }
 });
 
-await Task.Delay(2000);
 
 Console.WriteLine("🔄 Refrescamos los tenistas 🔄");
+
 tenistasService.EnableAutoRefresh();
 
 await Task.Delay(2000);
 
 // Obtenemos todos los tenistas
+
 var tenistas = tenistasService.GetAllAsync(false).Result.Match(
     tenistas =>
     {
@@ -120,18 +122,13 @@ tenistasService.SaveAsync(tenistaError).Result.Match(
 );
 
 // obtenemos todos los tenistas
-tenistas = tenistasService.GetAllAsync(false).Result.Match(
+tenistasService.GetAllAsync(false).Result.Match(
     tenistas =>
     {
         Console.WriteLine($"Encontrados {tenistas.Count} tenistas:");
         Console.WriteLine(string.Join("\n", tenistas));
-        return tenistas;
     },
-    error =>
-    {
-        Console.WriteLine($"Error al obtener los tenistas: {error}");
-        return [];
-    }
+    error => { Console.WriteLine($"Error al obtener los tenistas: {error}"); }
 );
 
 // Actualizamos un tenista
@@ -150,18 +147,13 @@ tenistasService.UpdateAsync(-1, tenistaToUpdate).Result.Match(
 );
 
 // Obtenemos todos los tenistas
-tenistas = tenistasService.GetAllAsync(false).Result.Match(
+tenistasService.GetAllAsync(false).Result.Match(
     tenistas =>
     {
         Console.WriteLine($"Encontrados {tenistas.Count} tenistas:");
         Console.WriteLine(string.Join("\n", tenistas));
-        return tenistas;
     },
-    error =>
-    {
-        Console.WriteLine($"Error al obtener los tenistas: {error}");
-        return [];
-    }
+    error => { Console.WriteLine($"Error al obtener los tenistas: {error}"); }
 );
 
 // Eliminamos un tenista
@@ -177,29 +169,38 @@ tenistasService.DeleteAsync(-1).Result.Match(
 );
 
 // Obtenemos todos los tenistas
-tenistas = tenistasService.GetAllAsync(false).Result.Match(
+tenistasService.GetAllAsync(false).Result.Match(
     tenistas =>
     {
         Console.WriteLine($"Encontrados {tenistas.Count} tenistas:");
         Console.WriteLine(string.Join("\n", tenistas));
-        return tenistas;
     },
-    error =>
-    {
-        Console.WriteLine($"Error al obtener los tenistas: {error}");
-        return [];
-    }
+    error => { Console.WriteLine($"Error al obtener los tenistas: {error}"); }
 );
 
 
-Console.WriteLine("🔇 Desactivamos la escucha de notificaciones de tenistas 🔇");
+// Espe
+/*await Task.Delay(30000); // Esperamos un segundo para que se complete
 
+
+Console.WriteLine("🔇 Desactivamos la escucha de notificaciones de tenistas 🔇");
 tenistasService.DisableAutoRefresh();
-notifications.Dispose();
+notifications.Dispose();*/
+
 
 Console.WriteLine("🎾🎾 Adiós Tenistas! 🎾🎾");
 
+/*var csvImportFile = Path.Combine("Data", "tenistas2.csv");
+tenistasService.ImportDataAsync(new FileInfo(csvImportFile)).Result.Match(
+    tenistas => { Console.WriteLine($"Tenistas importados desde csv: {tenistas}"); },
+    error => Console.WriteLine(error)
+);
 
+var jsonImportFile = Path.Combine("Data", "tenistas3.json");
+tenistasService.ImportDataAsync(new FileInfo(jsonImportFile)).Result.Match(
+    tenistas => { Console.WriteLine($"Tenistas importados desde json: {tenistas}"); },
+    error => Console.WriteLine(error)
+);*/
 /*
 // Cramos las notificaciones
 var notifications = new TenistasNotifications();

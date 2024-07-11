@@ -63,11 +63,14 @@ public class TenistasRepositoryLocal : ITenistasRepository
         {
             var timeStamp = DateTime.Now.ToString("o"); // Obtenemos la fecha y hora actual
             var entityToSave = entity.ToTenistaEntity();
+
             entityToSave.CreatedAt = timeStamp; // Añadimos la fecha de creación
             entityToSave.UpdatedAt = timeStamp; // Añadimos la fecha de actualización
-            entityToSave.Id = Tenista.NewId; // Añadimos un id nuevo
-            _db.Set<TenistaEntity>().Add(entityToSave); // Añadimos el tenista a la base de datos
+            entityToSave.Id = Tenista.NewId;
+            await _db.Set<TenistaEntity>().AddAsync(entityToSave); // Añadimos el tenista a la base de datos
             await _db.SaveChangesAsync(); // Guardamos los cambios
+
+            _logger.Debug("Guardado el tenista local en bd {entityToSave}", entityToSave);
             return Result.Success<Tenista, TenistaError>(entityToSave.ToTenista());
         }
         catch (Exception ex)
@@ -128,46 +131,35 @@ public class TenistasRepositoryLocal : ITenistasRepository
         await _db.Database.EnsureCreatedAsync(); // Creamos la base de datos si no existe
         await _db.SaveChangesAsync(); // Guardamos los cambios
         await _db.RemoveAllAsync(); // Borramos todos los registros porque es un repositorio local
-        await _db.SaveChangesAsync();
+        await _db.SaveChangesAsync(); // Guardamos los cambios
     }
 
     public async Task<Result<int, TenistaError>> SaveAllAsync(List<Tenista> tenistas)
     {
         _logger.Debug("Guardando todos los tenistas locales en bd");
-        try
+
+        var entityList =
+            tenistas.Select(tenista => tenista.ToTenistaEntity()).ToList(); // Convertimos los tenistas a entidades
+        var timeStamp = DateTime.Now.ToString("o"); // Obtenemos la fecha y hora actual
+        foreach (var entity in entityList)
         {
-            var timeStamp = DateTime.Now.ToString("o"); // Obtenemos la fecha y hora actual
-            var entitiesToSave = tenistas.Select(entity => entity.ToTenistaEntity()).ToList();
-            entitiesToSave.ForEach(entity =>
-            {
-                entity.CreatedAt = timeStamp; // Añadimos la fecha de creación
-                entity.UpdatedAt = timeStamp; // Añadimos la fecha de actualización
-            });
-            _db.Set<TenistaEntity>().AddRange(entitiesToSave); // Añadimos los tenistas a la base de datos
-            await _db.SaveChangesAsync(); // Guardamos los cambios
-            return Result.Success<int, TenistaError>(entitiesToSave.Count);
+            entity.CreatedAt = timeStamp; // Añadimos la fecha de creación
+            entity.UpdatedAt = timeStamp; // Añadimos la fecha de actualización
+            entity.Id = Tenista.NewId;
         }
-        catch (Exception ex)
-        {
-            return Result.Failure<int, TenistaError>(new TenistaError.DatabaseError(
-                $"No se han guardando los tenistas: {ex.Message}"));
-        }
+
+        await _db.Set<TenistaEntity>().AddRangeAsync(entityList); // Añadimos los tenistas a la base de datos
+        await _db.SaveChangesAsync(); // Guardamos los cambios
+        return Result.Success<int, TenistaError>(entityList.Count);
     }
 
     public async Task<Result<bool, TenistaError>> RemoveAllAsync()
     {
         _logger.Debug("Borrando todos los tenistas locales en bd");
-        try
-        {
-            await _db.RemoveAllAsync(); // Borramos todos los registros porque es un repositorio local
-            await _db.SaveChangesAsync();
-            return Result.Success<bool, TenistaError>(true);
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure<bool, TenistaError>(new TenistaError.DatabaseError(
-                $"No se han borrando los tenistas: {ex.Message}"));
-        }
+
+        await _db.RemoveAllAsync(); // Borramos todos los registros porque es un repositorio local
+        await _db.SaveChangesAsync(); // Guardamos los cambios
+        return Result.Success<bool, TenistaError>(true);
     }
 }
 

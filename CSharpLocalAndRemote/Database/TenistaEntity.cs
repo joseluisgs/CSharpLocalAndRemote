@@ -9,7 +9,7 @@ public class TenistaEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
+    public long Id { get; set; } = 0;
 
     [Required] [MaxLength(100)] public string Nombre { get; set; } = string.Empty;
 

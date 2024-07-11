@@ -6,7 +6,7 @@ namespace CSharpLocalAndRemote.Service;
 
 public interface ITenistasService
 {
-    const long RefreshTime = 50000;
+    const long RefreshTime = 5000;
 
     Task<Result<List<Tenista>, TenistaError>> GetAllAsync(bool fromRemote);
 
@@ -26,5 +26,5 @@ public interface ITenistasService
 
     void DisableAutoRefresh();
 
-    void LoadData();
+    Task LoadDataAsync();
 }

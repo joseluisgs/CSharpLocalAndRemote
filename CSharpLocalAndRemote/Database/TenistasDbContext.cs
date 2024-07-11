@@ -1,10 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpLocalAndRemote.Logger;
+using Microsoft.EntityFrameworkCore;
 
 namespace CSharpLocalAndRemote.Database;
 
 // El DbContext es la clase que se encarga de la conexión con la base de datos.
 public class TenistasDbContext : DbContext
 {
+    private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasDbContext>.GetLogger();
+
     public TenistasDbContext(DbContextOptions<TenistasDbContext> options) : base(options)
     {
     }
@@ -52,10 +55,21 @@ public class TenistasDbContext : DbContext
 
 public static class DbContextExtensions
 {
+    private static readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasDbContext>.GetLogger();
+
     // Si quiero que el id por mucho que elimine empiece por 1, npo es obligatori
     public static async Task RemoveAllAsync(this DbContext context)
     {
-        await context.Database.ExecuteSqlRawAsync("DELETE FROM TenistaEntity");
+        _logger.Debug("Borrando todos los tenistas locales en bd");
+        // No hace falta hacer el remove all, los borra de la tabla, pero no del dataset de memoria
+        // await context.Database.ExecuteSqlRawAsync("DELETE FROM TenistaEntity"); 
+        // Esta es la forma correcta de hacerlo
+        context.Set<TenistaEntity>()
+            .RemoveRange(context
+                .Set<TenistaEntity>()); // IMPORTANTE !!!!! Solo borrar asñi porque está enlazado con el DbSet
+        _logger.Debug("Reseteando el contador de la tabla TenistaEntity");
         await context.Database.ExecuteSqlRawAsync("DELETE FROM sqlite_sequence WHERE name = 'TenistaEntity'");
+        // await context.SaveChangesAsync(); // Ya lo hace el método que llama a este
+        _logger.Debug("Borrados todos los tenistas locales en bd y reseteado el contador de la tabla TenistaEntity");
     }
 }

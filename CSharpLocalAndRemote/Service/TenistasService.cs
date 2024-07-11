@@ -134,14 +134,28 @@ public class TenistasService : ITenistasService
             .Map(_ => id);
     }
 
-    public Task<Result<int, TenistaError>> ImportDataAsync(FileInfo file)
+    public async Task<Result<int, TenistaError>> ImportDataAsync(FileInfo file)
     {
-        throw new NotImplementedException();
+        _logger.Debug("Importando datos desde archivo: " + file.FullName);
+        return file.Extension.ToLower() switch
+        {
+            ".csv" => await ImportCsvAsync(file),
+            ".json" => await ImportJsonAsync(file),
+            _ => Result.Failure<int, TenistaError>(
+                new TenistaError.StorageError("Formato de archivo no soportado: " + file.Extension))
+        };
     }
 
     public Task<Result<int, TenistaError>> ExportDataAsync(FileInfo file, bool fromRemote)
     {
-        throw new NotImplementedException();
+        _logger.Debug("Exportando datos a archivo: " + file.FullName);
+        return file.Extension.ToLower() switch
+        {
+            ".csv" => ExportCsvAsync(file, fromRemote),
+            ".json" => ExportJsonAsync(file, fromRemote),
+            _ => Task.FromResult(Result.Failure<int, TenistaError>(
+                new TenistaError.StorageError("Formato de archivo no soportado: " + file.Extension)))
+        };
     }
 
     public void EnableAutoRefresh()
@@ -160,7 +174,7 @@ public class TenistasService : ITenistasService
             do
             {
                 _logger.Debug("Refrescando datos en segundo plano");
-                LoadData(); // Asegúrate de await la tarea LoadData
+                await LoadDataAsync(); // Asegúrate de await la tarea LoadData
                 await Task.Delay(TimeSpan.FromMilliseconds(_refreshTime));
 
                 lock (_lock) // Sincronización para chequeo seguro de _isRefreshing
@@ -174,6 +188,42 @@ public class TenistasService : ITenistasService
         });
     }
 
+
+    public async Task LoadDataAsync()
+    {
+        _logger.Debug("Cargando datos");
+        /*await _remoteRepository.GetAllAsync()
+            .Check(async _ => await _localRepository.RemoveAllAsync())
+            .Check(async remoteTenistas => await _localRepository.SaveAllAsync(remoteTenistas))
+            .Tap(_ => _cache.Clear())
+            .Tap(data => _notificationsService.Send(
+                    new Notification<TenistaDto>(NotificationType.Refresh, null,
+                        "Nuevos datos cargados " + data.Count,
+                        DateTime.Now)
+                )
+            );*/
+
+        var remoteTenistas = await _remoteRepository.GetAllAsync();
+        if (remoteTenistas.IsFailure)
+        {
+            _logger.Error("Error al cargar datos remotos: {Error}", remoteTenistas.Error);
+            return;
+        }
+
+        _logger.Debug("Datos remotos cargados: {Count}", remoteTenistas.Value.Count);
+
+        var deleted = await _localRepository.RemoveAllAsync();
+        if (deleted.IsFailure) _logger.Error("Error al eliminar datos locales: {Error}", deleted.Error);
+        var saved = await _localRepository.SaveAllAsync(remoteTenistas.Value);
+        if (saved.IsFailure) _logger.Error("Error al guardar datos locales: {Error}", saved.Error);
+        _cache.Clear();
+        await _notificationsService.Send(
+            new Notification<TenistaDto>(NotificationType.Refresh, null,
+                "Nuevos datos cargados " + remoteTenistas.Value.Count,
+                DateTime.Now)
+        );
+    }
+
     public void DisableAutoRefresh()
     {
         _logger.Debug("Deshabilitando auto refresco de datos");
@@ -185,19 +235,67 @@ public class TenistasService : ITenistasService
         }
     }
 
-
-    public async void LoadData()
+    private async Task<Result<int, TenistaError>> ExportJsonAsync(FileInfo file, bool fromRemote)
     {
-        _logger.Debug("Cargando datos");
-        await _remoteRepository.GetAllAsync()
-            .Check(async _ => await _localRepository.RemoveAllAsync())
-            .Check(async remoteTenistas => await _localRepository.SaveAllAsync(remoteTenistas))
-            .Tap(_ => _cache.Clear())
-            .Tap(data => _notificationsService.Send(
-                    new Notification<TenistaDto>(NotificationType.Refresh, null,
-                        "Nuevos datos cargados " + data.Count,
-                        DateTime.Now)
-                )
-            );
+        _logger.Debug("Exportando datos a archivo json: " + file.FullName);
+        var resultData = fromRemote
+            ? await _remoteRepository.GetAllAsync()
+            : await _localRepository.GetAllAsync();
+
+        if (resultData.IsFailure) return Result.Failure<int, TenistaError>(resultData.Error);
+
+        var res = await _jsonStorage.ExportAsync(file, resultData.Value);
+        return res.IsSuccess
+            ? Result.Success<int, TenistaError>(res.Value)
+            : Result.Failure<int, TenistaError>(res.Error);
+    }
+
+    private async Task<Result<int, TenistaError>> ExportCsvAsync(FileInfo file, bool fromRemote)
+    {
+        _logger.Debug("Exportando datos a archivo csv: " + file.FullName);
+        var resultData = fromRemote
+            ? await _remoteRepository.GetAllAsync()
+            : await _localRepository.GetAllAsync();
+
+        if (resultData.IsFailure) return Result.Failure<int, TenistaError>(resultData.Error);
+
+        var res = await _csvStorage.ExportAsync(file, resultData.Value);
+        return res.IsSuccess
+            ? Result.Success<int, TenistaError>(res.Value)
+            : Result.Failure<int, TenistaError>(res.Error);
+    }
+
+    private async Task<Result<int, TenistaError>> ImportJsonAsync(FileInfo file)
+    {
+        _logger.Debug("Importando datos desde archivo json: " + file.FullName);
+
+        var tenistas = await _jsonStorage.ImportAsync(file);
+        return tenistas.IsSuccess
+            ? await SaveAllAsync(tenistas.Value)
+            : Result.Failure<int, TenistaError>(tenistas.Error);
+    }
+
+    private async Task<Result<int, TenistaError>> ImportCsvAsync(FileInfo file)
+    {
+        _logger.Debug("Importando datos desde archivo csv: {FileName}", file.FullName);
+
+        var tenistas = await _csvStorage.ImportAsync(file);
+        return tenistas.IsSuccess
+            ? await SaveAllAsync(tenistas.Value)
+            : Result.Failure<int, TenistaError>(tenistas.Error);
+    }
+
+    private async Task<Result<int, TenistaError>> SaveAllAsync(List<Tenista> tenistas)
+    {
+        _logger.Debug("Guardando todos los tenistas importados");
+        var contador = 0;
+        return await _localRepository.RemoveAllAsync()
+            .Tap(async () =>
+            {
+                foreach (var tenista in tenistas)
+                    await _remoteRepository.SaveAsync(tenista)
+                        .Check(async tenistaSaved => await _localRepository.SaveAsync(tenistaSaved))
+                        .Tap(_ => contador++);
+            }).Map(_ => contador);
     }
 }

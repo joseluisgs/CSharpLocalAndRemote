@@ -20,7 +20,7 @@ public class TenistasService : ITenistasService
     private readonly ITenistasRepositoryLocal _localRepository;
     private readonly object _lock = new();
     private readonly Serilog.Core.Logger _logger = LoggerUtils<TenistasService>.GetLogger();
-    private readonly TenistasNotifications _notificationsService;
+    private readonly ITenistasNotifications _notificationsService;
     private readonly long _refreshTime;
     private readonly ITenistasRepositoryRemote _remoteRepository;
     private int _isRefreshing; // 0 = false, 1 = true
@@ -28,7 +28,7 @@ public class TenistasService : ITenistasService
 
     public TenistasService(ITenistasRepositoryLocal localReository, ITenistasRepositoryRemote remoteRepository,
         ITenistasCache cache, TenistasStorageCsv csvStorage, TenistasStorageJson jsonStorage,
-        TenistasNotifications notificationsService, long refreshTime)
+        ITenistasNotifications notificationsService, long refreshTime)
     {
         _logger.Debug("Creando TenistasService");
 
@@ -42,7 +42,7 @@ public class TenistasService : ITenistasService
     }
 
     // Propiedad para obtener el flujo de notificaciones, pero solo las que no son null
-    public IObservable<Notification<TenistaDto>?> Notifications => _notificationsService.Notifications;
+    public IObservable<Notification<TenistaDto>?> Notifications => _notificationsService.GetNotifications();
 
 
     public async Task<Result<List<Tenista>, TenistaError>> GetAllAsync(bool fromRemote)

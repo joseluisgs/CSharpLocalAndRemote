@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using CSharpFunctionalExtensions;
 using CSharpLocalAndRemote.Cache;
+using CSharpLocalAndRemote.Dto;
 using CSharpLocalAndRemote.Error;
 using CSharpLocalAndRemote.model;
 using CSharpLocalAndRemote.Notification;
@@ -23,7 +24,7 @@ public class TenistasServiceTest
         _mockRemoteRepository = new Mock<ITenistasRepositoryRemote>();
         _mockCsvStorage = new Mock<TenistasStorageCsv>();
         _mockJsonStorage = new Mock<TenistasStorageJson>();
-        _mockNotificationsService = new Mock<TenistasNotifications>();
+        _mockNotificationsService = new Mock<ITenistasNotifications>();
 
         _tenistasService = new TenistasService(
             _mockLocalRepository.Object,
@@ -41,7 +42,7 @@ public class TenistasServiceTest
     private Mock<ITenistasRepositoryRemote> _mockRemoteRepository;
     private Mock<TenistasStorageCsv> _mockCsvStorage;
     private Mock<TenistasStorageJson> _mockJsonStorage;
-    private Mock<TenistasNotifications> _mockNotificationsService;
+    private Mock<ITenistasNotifications> _mockNotificationsService;
     private TenistasService _tenistasService;
 
     private readonly Tenista testTenista =
@@ -198,5 +199,61 @@ public class TenistasServiceTest
         _mockCache.Verify(cache => cache.Get(It.IsAny<long>()), Times.Once);
         _mockLocalRepository.Verify(repo => repo.GetByIdAsync(1), Times.Once);
         _mockRemoteRepository.Verify(repo => repo.GetByIdAsync(1), Times.Once);
+    }
+
+    [Test]
+    [DisplayName("Debe guardar un tenista con éxito")]
+    public async Task SaveAsync_Exito()
+    {
+        // Arrange
+        _mockRemoteRepository.Setup(repo => repo.SaveAsync(It.IsAny<Tenista>()))
+            .ReturnsAsync(Result.Success<Tenista, TenistaError>(testTenista));
+        _mockLocalRepository.Setup(repo => repo.SaveAsync(It.IsAny<Tenista>()))
+            .ReturnsAsync(Result.Success<Tenista, TenistaError>(testTenista));
+        _mockCache.Setup(cache => cache.Put(It.IsAny<long>(), It.IsAny<Tenista>()));
+        _mockNotificationsService.Setup(service => service.Send(It.IsAny<Notification<TenistaDto>>()));
+
+        // Act
+        var result = await _tenistasService.SaveAsync(testTenista);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True, "El resultado debe ser exitoso");
+            Assert.That(result.Value, Is.EqualTo(testTenista),
+                "El tenista devuelto debe ser el mismo que el guardado");
+        });
+
+        _mockRemoteRepository.Verify(repo => repo.SaveAsync(It.IsAny<Tenista>()), Times.Once);
+        _mockLocalRepository.Verify(repo => repo.SaveAsync(It.IsAny<Tenista>()), Times.Once);
+        _mockCache.Verify(cache => cache.Put(It.IsAny<long>(), It.IsAny<Tenista>()), Times.Once);
+        _mockNotificationsService.Verify(service => service.Send(It.IsAny<Notification<TenistaDto>>()), Times.Once);
+    }
+
+    [Test]
+    [DisplayName("Debe fallar al guardar un tenista por validación")]
+    public async Task SaveAsync_FalloValidacion()
+    {
+        // Arrange
+        var invalidTenista = new Tenista("Test", "", 0, 0, 0, Mano.Diestro, DateTime.MinValue, id: 2);
+        _mockLocalRepository.Setup(repo => repo.SaveAsync(It.IsAny<Tenista>()))
+            .ReturnsAsync(
+                Result.Failure<Tenista, TenistaError>(
+                    new TenistaError.ValidationError("ERROR: La altura debe ser mayor a 0")));
+
+        // Act
+        var result = await _tenistasService.SaveAsync(invalidTenista);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.False, "El resultado debe ser fallido");
+            Assert.That(result.Error, Is.InstanceOf<TenistaError.ValidationError>(),
+                "Debe fallar por un error de validación");
+            Assert.That(result.Error.ToString(), Is.EqualTo("ERROR: La altura debe ser mayor a 0"),
+                "El mensaje del error debe ser el esperado");
+        });
+
+        _mockRemoteRepository.Verify(repo => repo.SaveAsync(It.IsAny<Tenista>()), Times.Never);
     }
 }

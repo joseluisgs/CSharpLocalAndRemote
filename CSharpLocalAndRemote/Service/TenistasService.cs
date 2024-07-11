@@ -192,7 +192,7 @@ public class TenistasService : ITenistasService
     public async Task LoadDataAsync()
     {
         _logger.Debug("Cargando datos");
-        /*await _remoteRepository.GetAllAsync()
+        await _remoteRepository.GetAllAsync()
             .Check(async _ => await _localRepository.RemoveAllAsync())
             .Check(async remoteTenistas => await _localRepository.SaveAllAsync(remoteTenistas))
             .Tap(_ => _cache.Clear())
@@ -201,27 +201,7 @@ public class TenistasService : ITenistasService
                         "Nuevos datos cargados " + data.Count,
                         DateTime.Now)
                 )
-            );*/
-
-        var remoteTenistas = await _remoteRepository.GetAllAsync();
-        if (remoteTenistas.IsFailure)
-        {
-            _logger.Error("Error al cargar datos remotos: {Error}", remoteTenistas.Error);
-            return;
-        }
-
-        _logger.Debug("Datos remotos cargados: {Count}", remoteTenistas.Value.Count);
-
-        var deleted = await _localRepository.RemoveAllAsync();
-        if (deleted.IsFailure) _logger.Error("Error al eliminar datos locales: {Error}", deleted.Error);
-        var saved = await _localRepository.SaveAllAsync(remoteTenistas.Value);
-        if (saved.IsFailure) _logger.Error("Error al guardar datos locales: {Error}", saved.Error);
-        _cache.Clear();
-        await _notificationsService.Send(
-            new Notification<TenistaDto>(NotificationType.Refresh, null,
-                "Nuevos datos cargados " + remoteTenistas.Value.Count,
-                DateTime.Now)
-        );
+            );
     }
 
     public void DisableAutoRefresh()

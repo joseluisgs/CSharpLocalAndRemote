@@ -94,7 +94,7 @@ public class TenistasRepositoryLocal : ITenistasRepository
             entityToUpdate.UpdateFrom(entity.ToTenistaEntity()); // Actualizamos los campos de la entidad
             entityToUpdate.UpdatedAt = timeStamp; // Actualizamos la fecha de actualización
 
-            await _db.SaveChangesAsync(); // Guardamos los cambios
+            await _db.SaveChangesAsync(); // Guardamos los cambios, uso Save porque la entidad ya existe en el contexto (FindAsync)
             return Result.Success<Tenista, TenistaError>(entityToUpdate.ToTenista());
         }
         catch (Exception ex)
@@ -114,7 +114,8 @@ public class TenistasRepositoryLocal : ITenistasRepository
                 return Result.Failure<long, TenistaError>(new TenistaError.DatabaseError(
                     $"El tenista con id {id} no se encontró en la base de datos."));
 
-            _db.Set<TenistaEntity>().Remove(entityToDelete);
+            _db.Set<TenistaEntity>()
+                .Remove(entityToDelete); // Borramos el tenista de la base de datos, uso Remove porque la entidad ya existe en el contexto (FindAsync)
             await _db.SaveChangesAsync();
             return Result.Success<long, TenistaError>(id);
         }

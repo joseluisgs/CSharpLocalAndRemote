@@ -40,9 +40,9 @@ var tenistasService = new TenistasService(
 );
 */
 
-// Creamos el host con la infraestructura necesaria
+// Creamos el host con la infraestructura necesaria, lectura de appsettings.json, inyección de dependencias, etc.
 var host = HostBuilderHelper.BuildHost(args);
-// Ahora ya tenemos acceso a los servicios
+// Ahora ya tenemos acceso a los servicios y nos los proporciona AppInjector
 var tenistasService = AppInjector.GetService<ITenistasService>();
 
 

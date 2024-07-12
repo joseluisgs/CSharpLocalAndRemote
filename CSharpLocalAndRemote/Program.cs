@@ -40,9 +40,10 @@ var tenistasService = new TenistasService(
 );
 */
 
-// Con inyección de dependencias
+// Creamos el host con la infraestructura necesaria
 var host = HostBuilderHelper.BuildHost(args);
-var tenistasService = host.Services.GetRequiredService<ITenistasService>();
+// Ahora ya tenemos acceso a los servicios
+var tenistasService = AppInjector.GetService<ITenistasService>();
 
 
 // Creamos el trabajo de notificaciones

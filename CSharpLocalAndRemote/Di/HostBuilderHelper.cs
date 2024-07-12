@@ -18,7 +18,7 @@ public static class HostBuilderHelper
 {
     public static IHost BuildHost(string[] args)
     {
-        return Host.CreateDefaultBuilder(args)
+        var host = Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((context, config) =>
             {
                 config.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
@@ -26,6 +26,11 @@ public static class HostBuilderHelper
             })
             .ConfigureServices(ConfigureServices)
             .Build();
+
+        // Se lo pasamos a AppInjector para que pueda resolver dependencias
+        AppInjector.SetServiceProvider(host.Services);
+
+        return host;
     }
 
     private static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
